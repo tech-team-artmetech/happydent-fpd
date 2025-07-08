@@ -123,19 +123,21 @@ const SplashScreen = ({ onComplete }) => {
   }, []); // Only run on mount
 
   // Preload all images
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const totalFrames = 31;
+
   useEffect(() => {
     const images = {};
     let loadedCount = 0;
-    const totalImages = 31;
 
-    for (let i = 0; i <= 30; i++) {
+    for (let i = 0; i < totalFrames; i++) {
       const img = new Image();
       const fileName = `Comp 1_${i.toString().padStart(5, "0")}.png`;
       const src = `/assets/smile/${fileName}`;
 
       img.onload = () => {
         loadedCount++;
-        if (loadedCount === totalImages) {
+        if (loadedCount === totalFrames) {
           setImagesLoaded(true);
         }
       };
@@ -147,36 +149,39 @@ const SplashScreen = ({ onComplete }) => {
     setPreloadedImages(images);
   }, []);
 
-  // Start progress animation after images are loaded
   useEffect(() => {
     if (!imagesLoaded) return;
 
-    let step = 0;
-    const totalSteps = 31;
+    let frame = 0;
+    const totalFrames = 31;
+    const frameDuration = 25; // ms per frame → ~12.5 FPS (adjust to 100 for slower)
 
-    const interval = setInterval(() => {
-      if (step >= totalSteps) {
+    let lastFrameTime = performance.now();
+
+    const animate = (timestamp) => {
+      if (frame >= totalFrames) {
         setLoadingProgress(100);
-
-        // immediately hide loading content
         setShowLoadingContent(false);
 
-        // after our 300 ms fade, show the button
         setTimeout(() => {
           setShowButton(true);
           setShowFinalContent(true);
         }, 300);
 
-        clearInterval(interval);
         return;
       }
 
-      const progress = (step / (totalSteps - 1)) * 100;
-      setLoadingProgress(progress);
-      step++;
-    }, 50);
+      if (timestamp - lastFrameTime >= frameDuration) {
+        setCurrentFrame(frame);
+        setLoadingProgress((frame / (totalFrames - 1)) * 100);
+        frame++;
+        lastFrameTime = timestamp;
+      }
 
-    return () => clearInterval(interval);
+      requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
   }, [imagesLoaded]);
 
   // NEW: Create unique session ID
