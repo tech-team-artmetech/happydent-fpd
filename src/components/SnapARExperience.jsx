@@ -846,8 +846,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
       console.log("🔥 Step 3: Load both lenses...");
       const actualLensGroupId = "b2aafdd8-cb11-4817-9df9-835b36d9d5a7";
-      const lessLensId = "522218f6-7200-4d66-9f05-ddd56c81a8e5";
-      const moreLensId = "c4b85218-50a5-4a71-b719-0a1381b4e73e";
+      const lessLensId = "c9b9a62d-0a61-4e26-9db1-67133ff07b99";
+      const moreLensId = "3d4c5e55-255e-4e92-8c93-24530158d072";
 
       // Load both lenses
       const lessLens = await cache.cameraKit.lensRepository.loadLens(
@@ -1119,8 +1119,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       "less";
     const appliedLensId =
       appliedGroupSize === "less"
-        ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
-        : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
+        ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
+        : "3d4c5e55-255e-4e92-8c93-24530158d072";
 
     onComplete({
       ...userData,
@@ -1390,8 +1390,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           "less";
         const appliedLensId =
           appliedGroupSize === "less"
-            ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
-            : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
+            ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
+            : "3d4c5e55-255e-4e92-8c93-24530158d072";
 
         setTimeout(() => {
           setIsUploading(false);
@@ -1420,8 +1420,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           "less";
         const appliedLensId =
           appliedGroupSize === "less"
-            ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
-            : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
+            ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
+            : "3d4c5e55-255e-4e92-8c93-24530158d072";
 
         setTimeout(() => {
           setIsUploading(false);
@@ -1453,8 +1453,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         "less";
       const appliedLensId =
         appliedGroupSize === "less"
-          ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
-          : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
+          ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
+          : "3d4c5e55-255e-4e92-8c93-24530158d072";
 
       setTimeout(() => {
         setIsUploading(false);
