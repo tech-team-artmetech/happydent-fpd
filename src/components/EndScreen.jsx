@@ -401,29 +401,65 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       // Create a new window/tab for printing
       const printWindow = window.open('', '_blank');
 
+      // Create the filename with user's name
+      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, '_') || 'user'}`;
+
       // Write HTML content with the image
       printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Print Photo</title>
+          <title>${fileName}</title>
           <style>
+            @page {
+              margin: 0;
+              size: auto;
+            }
+            
             body {
               margin: 0;
-              padding: 20px;
+              padding: 0;
               display: flex;
               justify-content: center;
               align-items: center;
               min-height: 100vh;
+              background: white;
             }
+            
             img {
               max-width: 100%;
-              max-height: 100%;
+              max-height: 100vh;
               object-fit: contain;
+              display: block;
             }
+            
             @media print {
-              body { margin: 0; padding: 0; }
-              img { width: 100%; height: auto; }
+              @page {
+                margin: 0 !important;
+                size: auto !important;
+              }
+              
+              body { 
+                margin: 10px !important; 
+                padding: 0 !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              
+              img { 
+                width: 100% !important; 
+                height: auto !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                page-break-inside: avoid !important;
+              }
+              
+              /* Hide any browser-generated content */
+              * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
             }
           </style>
         </head>
@@ -445,7 +481,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     try {
       const imageBlob = await fetch(photoUrl).then(r => r.blob());
       const formData = new FormData();
-      formData.append('file', imageBlob, 'photo.jpg');
+      formData.append('file', imageBlob, fileName);
 
       const response = await fetch(`http://${printer.ip}:${printer.port}/ipp/print`, {
         method: 'POST',
@@ -483,7 +519,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           canvas.toBlob(async (blob) => {
             try {
               if (navigator.share && blob) {
-                const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
 
                 // On iOS, this should show print option directly
                 await navigator.share({
