@@ -1264,7 +1264,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         polaroidArea = {
           x: 10,
           y: 5,
-          width: 78,
+          width: 80,
           height: 77,
         };
         console.log("📱 Using TABLET polaroid area");
