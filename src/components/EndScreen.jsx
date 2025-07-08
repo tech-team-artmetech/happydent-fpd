@@ -388,6 +388,58 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     }
   };
 
+  // Handle Normal Print button click
+  const handleNormalPrint = async () => {
+    if (!userPhoto && !photoInfo?.imageUrl) {
+      setError("No photo available to print.");
+      return;
+    }
+
+    const photoUrl = userPhoto || photoInfo?.imageUrl;
+
+    try {
+      // Create a new window/tab for printing
+      const printWindow = window.open('', '_blank');
+
+      // Write HTML content with the image
+      printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print Photo</title>
+          <style>
+            body {
+              margin: 0;
+              padding: 20px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+              object-fit: contain;
+            }
+            @media print {
+              body { margin: 0; padding: 0; }
+              img { width: 100%; height: auto; }
+            }
+          </style>
+        </head>
+        <body>
+          <img src="${photoUrl}" alt="Photo to print" onload="window.print(); window.close();" />
+        </body>
+      </html>
+    `);
+
+      printWindow.document.close();
+    } catch (error) {
+      console.error('Normal print error:', error);
+      setError("Failed to open print dialog. Please try again.");
+    }
+  };
+
   // Send to network printer via IPP
   const sendToNetworkPrinter = async (printer, photoUrl) => {
     try {
@@ -822,6 +874,36 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             {photoInfo?.hasPhoto ? "PROCEED TO PRINT" : "DOWNLOAD"}
           </button>
         )}
+
+        {showQR && (
+
+          <button
+            onClick={handleNormalPrint}
+            className="text-white text-sm font-bold cursor-pointer py-3 flex-1 flex items-center justify-center gap-1 text-white text-xl font-bold cursor-pointer py-3 w-80"
+            style={{
+              background:
+                "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
+              borderRadius: "4px",
+              border: "1px solid rgba(255, 255, 255, 0.52)",
+              borderStyle: "inside",
+              boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.39)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              opacity: "100%",
+            }}
+          >
+            {/* Print Icon */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6,9 6,2 18,2 18,9"></polyline>
+              <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2-2H20a2,2,0,0,1,2,2v5a2,2,0,0,1-2,2H18"></path>
+              <polyline points="6,14 18,14 18,22 6,22 6,14"></polyline>
+            </svg>
+            PRINT
+          </button>
+
+        )}
+
+
         {/* Print Buttons Row - Only show when QR is displayed */}
         {showQR && (
           <div className="flex gap-4 w-80">
@@ -898,6 +980,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               </svg>
               PRINT
             </button>
+
           </div>
         )}
 
