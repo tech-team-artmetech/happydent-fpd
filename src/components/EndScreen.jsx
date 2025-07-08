@@ -412,37 +412,40 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           <title>${fileName}</title>
           <style>
             @page {
+              size: 5in 7in;
               margin: 0;
-              size: auto;
+              orientation: portrait;
             }
             
             body {
               margin: 0;
               padding: 0;
+              width: 5in;
+              height: 7in;
               display: flex;
               justify-content: center;
               align-items: center;
-              min-height: 100vh;
               background: white;
               overflow: hidden;
             }
             
             img {
-              max-width: 100%;
-              max-height: 100vh;
+              max-width: 5in;
+              max-height: 7in;
               object-fit: contain;
               display: block;
             }
             
             @media print {
               @page {
+                size: 5in 7in !important;
                 margin: 0 !important;
-                size: auto !important;
+                orientation: portrait !important;
               }
               
               html, body { 
-                width: 100% !important;
-                height: 100% !important;
+                width: 5in !important;
+                height: 7in !important;
                 margin: 0 !important; 
                 padding: 0 !important;
                 background: white !important;
@@ -453,22 +456,22 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               }
               
               img { 
-              max-width: 100% !important; 
-              max-height: 100vh !important;
-              width: auto !important;
-              height: auto !important;
-              object-fit: contain !important;
-              page-break-inside: avoid !important;
-              page-break-before: avoid !important;
-              page-break-after: avoid !important;
-              display: block !important;
-              /* Enhanced print quality */
-              filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
-              image-rendering: -webkit-optimize-contrast !important;
-              image-rendering: crisp-edges !important;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
+                max-width: 5in !important; 
+                max-height: 7in !important;
+                width: auto !important;
+                height: auto !important;
+                object-fit: contain !important;
+                page-break-inside: avoid !important;
+                page-break-before: avoid !important;
+                page-break-after: avoid !important;
+                display: block !important;
+                /* Enhanced print quality */
+                filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
+                image-rendering: -webkit-optimize-contrast !important;
+                image-rendering: crisp-edges !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
               
               /* Force single page */
               * {
