@@ -555,8 +555,8 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
           groupSize: formData.groupSize,
           lensId:
             formData.groupSize === "less"
-              ? "31000d06-6d26-4b39-8dd0-6e63aeb5901d"
-              : "9187f2ac-af8f-4be0-95e9-cf19261c0082",
+              ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
+              : "c4b85218-50a5-4a71-b719-0a1381b4e73e",
         },
       });
     } catch (error) {

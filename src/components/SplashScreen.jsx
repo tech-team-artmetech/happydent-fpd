@@ -274,7 +274,7 @@ const SplashScreen = ({ onComplete }) => {
       // 🔥 STEP 3: Load lens assets (ALL API calls happen here)
       if (!cache.lenses) {
         const actualLensGroupId = "b2aafdd8-cb11-4817-9df9-835b36d9d5a7";
-        const lessLensId = "bc57c671-4255-423e-9eaf-71daba627ca8"; // Less than 3 people
+        const lessLensId = "522218f6-7200-4d66-9f05-ddd56c81a8e5"; // Less than 3 people
         const moreLensId = "c4b85218-50a5-4a71-b719-0a1381b4e73e"; // More than 3 people
 
         // Load both lenses

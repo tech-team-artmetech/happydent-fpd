@@ -830,7 +830,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
       console.log("🔥 Step 3: Load both lenses...");
       const actualLensGroupId = "b2aafdd8-cb11-4817-9df9-835b36d9d5a7";
-      const lessLensId = "bc57c671-4255-423e-9eaf-71daba627ca8";
+      const lessLensId = "522218f6-7200-4d66-9f05-ddd56c81a8e5";
       const moreLensId = "c4b85218-50a5-4a71-b719-0a1381b4e73e";
 
       // Load both lenses
@@ -1103,7 +1103,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       "less";
     const appliedLensId =
       appliedGroupSize === "less"
-        ? "bc57c671-4255-423e-9eaf-71daba627ca8"
+        ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
         : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
 
     onComplete({
@@ -1374,7 +1374,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           "less";
         const appliedLensId =
           appliedGroupSize === "less"
-            ? "bc57c671-4255-423e-9eaf-71daba627ca8"
+            ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
             : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
 
         setTimeout(() => {
@@ -1404,7 +1404,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           "less";
         const appliedLensId =
           appliedGroupSize === "less"
-            ? "bc57c671-4255-423e-9eaf-71daba627ca8"
+            ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
             : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
 
         setTimeout(() => {
@@ -1437,7 +1437,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         "less";
       const appliedLensId =
         appliedGroupSize === "less"
-          ? "bc57c671-4255-423e-9eaf-71daba627ca8"
+          ? "522218f6-7200-4d66-9f05-ddd56c81a8e5"
           : "c4b85218-50a5-4a71-b719-0a1381b4e73e";
 
       setTimeout(() => {
