@@ -1263,9 +1263,9 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         // Condition 1: Tablet devices
         polaroidArea = {
           x: 5,
-          y: 0,
+          y: 1,
           width: 90,
-          height: 87,
+          height: 86,
         };
         console.log("📱 Using TABLET polaroid area");
       } else if (isSohamDevice) {

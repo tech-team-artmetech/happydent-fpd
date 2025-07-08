@@ -424,6 +424,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               align-items: center;
               min-height: 100vh;
               background: white;
+              overflow: hidden;
             }
             
             img {
@@ -439,26 +440,48 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 size: auto !important;
               }
               
-              body { 
-                margin: 10px !important; 
+              html, body { 
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important; 
                 padding: 0 !important;
                 background: white !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+                overflow: hidden !important;
+                page-break-after: avoid !important;
               }
               
               img { 
-                width: 100% !important; 
-                height: auto !important;
-                max-width: 100% !important;
-                max-height: 100% !important;
-                page-break-inside: avoid !important;
-              }
+              max-width: 100% !important; 
+              max-height: 100vh !important;
+              width: auto !important;
+              height: auto !important;
+              object-fit: contain !important;
+              page-break-inside: avoid !important;
+              page-break-before: avoid !important;
+              page-break-after: avoid !important;
+              display: block !important;
+              /* Enhanced print quality */
+              filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
+              image-rendering: -webkit-optimize-contrast !important;
+              image-rendering: crisp-edges !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
               
-              /* Hide any browser-generated content */
+              /* Force single page */
               * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+                page-break-inside: avoid !important;
+                orphans: 1 !important;
+                widows: 1 !important;
+              }
+              
+              /* Hide everything that might cause page breaks */
+              body > *:not(img) {
+                display: none !important;
               }
             }
           </style>
