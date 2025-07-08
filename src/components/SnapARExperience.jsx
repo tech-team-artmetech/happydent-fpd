@@ -289,15 +289,26 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       if (
         detection.consecutiveDetections >= RED_DEMON_CONFIG.requiredDetections
       ) {
-        console.log("🔴👹 RED DEMON CONFIRMED - showing PROCEED button!");
+        console.log("🔴👹 RED DEMON CONFIRMED - stopping scan and showing PROCEED button!");
+
         stopRedDemonDetection();
+
+        // ✅ Prevent further updates
+        setRedDemonDetection((prev) => ({
+          ...prev,
+          isScanning: false,
+          demonDetected: false, // Optional: avoid future triggers
+        }));
+
         setShowCaptureButton(true);
 
-        // Clear the timer since demon was detected
+        // ✅ Ensure fallback timer stops too
         if (arStartTimerRef.current) {
           clearTimeout(arStartTimerRef.current);
           arStartTimerRef.current = null;
         }
+
+        return; // ✅ Exit early to stop further processing
       }
     } else {
       // Reset consecutive count if no demon found
@@ -393,12 +404,17 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
     // 🔴 Check if red demon was detected
     if (redDemonDetection.demonDetected && !showCaptureButton) {
       console.log("🔴👹 Red demon detected - showing PROCEED button");
+
       setShowCaptureButton(true);
-      // Clear timer since demon was detected
-      if (arStartTimerRef.current) {
-        clearTimeout(arStartTimerRef.current);
-        arStartTimerRef.current = null;
-      }
+
+      stopRedDemonDetection();
+
+      // Reset detection state to avoid future effect triggers
+      setRedDemonDetection({
+        demonDetected: false,
+        isScanning: false,
+        consecutiveDetections: 0,
+      });
     }
   }, [
     arSessionEnded,
@@ -927,7 +943,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       const isVisible = rect.width > 0 && rect.height > 0;
 
       if (!isVisible) {
-        console.warn("🚨 Canvas not visible, attempting recovery...");
+        // console.warn("🚨 Canvas not visible, attempting recovery...");
 
         // Try to make canvas visible again
         canvas.style.display = "block";
@@ -1249,7 +1265,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           x: 5,
           y: 0,
           width: 90,
-          height: 90,
+          height: 87,
         };
         console.log("📱 Using TABLET polaroid area");
       } else if (isSohamDevice) {

@@ -803,24 +803,25 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       {/* Buttons Container */}
       <div className="flex flex-col space-y-4 items-center z-20 relative">
         {/* Download Button */}
-        <button
-          onClick={handleDownload}
-          className="text-white text-xl font-bold cursor-pointer py-3 w-80"
-          style={{
-            background:
-              "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
-            borderRadius: "4px",
-            border: "1px solid rgba(255, 255, 255, 0.52)",
-            borderStyle: "inside",
-            boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.39)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            opacity: "100%",
-          }}
-        >
-          DOWNLOAD
-        </button>
-
+        {!showQR && (
+          <button
+            onClick={handleDownload}
+            className="text-white text-xl font-bold cursor-pointer py-3 w-80"
+            style={{
+              background:
+                "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
+              borderRadius: "4px",
+              border: "1px solid rgba(255, 255, 255, 0.52)",
+              borderStyle: "inside",
+              boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.39)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              opacity: "100%",
+            }}
+          >
+            {photoInfo?.hasPhoto ? "PROCEED TO PRINT" : "DOWNLOAD"}
+          </button>
+        )}
         {/* Print Buttons Row - Only show when QR is displayed */}
         {showQR && (
           <div className="flex gap-4 w-80">
