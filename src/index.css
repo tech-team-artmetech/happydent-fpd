@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @font-face {
+  font-family: "Gotham Pro";
+  src: url("src/assets/fonts/Gotham-Black.otf") format("opentype");
+} */
+
+/*  */
+/* Gotham Rounded Bold */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham Rounded Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Gotham Black */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Gotham Book Italic */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-BookItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Gotham Light */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Gotham Thin */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-Thin.otf") format("opentype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+/* Gotham Thin Italic */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-ThinItalic.otf") format("opentype");
+  font-weight: 100;
+  font-style: italic;
+}
+
+/* Gotham Ultra Italic */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-UltraItalic.otf") format("opentype");
+  font-weight: 950;
+  font-style: italic;
+}
+
+/* Gotham XLight */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-XLight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+/* Gotham XLight Italic */
+@font-face {
+  font-family: "Gotham";
+  src: url("/src/assets/fonts/Gotham-XLightItalic.otf") format("opentype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+:root {
+  font-family: "Gotham", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  background-image: url("/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+.chamking-smile-logo {
+  max-width: 30%;
+}
+
+@media (max-width: 575.98px) {
+  .chamking-smile-logo {
+    max-width: 209px;
+  }
+}
+
+/* button.ctaBtn {
+  font-family: "Gotham", sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  text-transform: uppercase;
+} */
+
+@media (min-width: 576px) and (max-width: 1025px) {
+  .canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    aspect-ratio: 9 / 16 !important;
+    background: linear-gradient(180deg, #0c1f59, #0b3396) !important;
+  }
+}
+
+.radio-btn-container button,
+.radio-btn-container button:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+@media (max-width: 390px) {
+  button.fixed-btn {
+    min-width: auto !important;
+  }
+}
