@@ -130,12 +130,12 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
     topAreaPercent: 0.25, // Top 25% of canvas
     sampleRate: 0.02, // Sample only 2% of pixels in the area (ultra-efficient)
     redThresholds: {
-      minRed: 180, // Minimum red value (0-255)
+      minRed: 150, // Minimum red value (0-255)
       maxGreen: 100, // Maximum green value (to ensure it's red, not orange/yellow)
       maxBlue: 100, // Maximum blue value (to ensure it's red, not purple)
       minIntensity: 200, // Minimum overall intensity to avoid dark reds
     },
-    minRedPixels: 15, // Minimum red pixels needed to trigger detection
+    minRedPixels: 7, // Minimum red pixels needed to trigger detection
     maxScanTime: 30000, // Stop scanning after 30 seconds
   };
 
