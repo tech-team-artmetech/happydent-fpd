@@ -289,7 +289,9 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       if (
         detection.consecutiveDetections >= RED_DEMON_CONFIG.requiredDetections
       ) {
-        console.log("🔴👹 RED DEMON CONFIRMED - stopping scan and showing PROCEED button!");
+        console.log(
+          "🔴👹 RED DEMON CONFIRMED - stopping scan and showing PROCEED button!"
+        );
 
         stopRedDemonDetection();
 
@@ -1262,10 +1264,12 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       if (isTablet) {
         // Condition 1: Tablet devices
         polaroidArea = {
-          x: 10,
-          y: 5,
-          width: 80,
-          height: 77,
+          x: 5,
+          y: 0,
+          // width: 80,
+          // height: 77,
+          width: 90,
+          height: 90,
         };
         console.log("📱 Using TABLET polaroid area");
       } else if (isSohamDevice) {
