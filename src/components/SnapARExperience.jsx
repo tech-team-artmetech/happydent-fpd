@@ -848,8 +848,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
       console.log("🔥 Step 3: Load both lenses...");
       const actualLensGroupId = "b2aafdd8-cb11-4817-9df9-835b36d9d5a7";
-      const lessLensId = "c9b9a62d-0a61-4e26-9db1-67133ff07b99";
-      const moreLensId = "3d4c5e55-255e-4e92-8c93-24530158d072";
+      const lessLensId = "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d";
+      const moreLensId = "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
       // Load both lenses
       const lessLens = await cache.cameraKit.lensRepository.loadLens(
@@ -1121,8 +1121,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       "less";
     const appliedLensId =
       appliedGroupSize === "less"
-        ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
-        : "3d4c5e55-255e-4e92-8c93-24530158d072";
+        ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+        : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
     onComplete({
       ...userData,
@@ -1264,12 +1264,10 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       if (isTablet) {
         // Condition 1: Tablet devices
         polaroidArea = {
-          x: 5,
-          y: 0,
-          // width: 80,
-          // height: 77,
-          width: 90,
-          height: 90,
+          x: 13.3,
+          y: 4.5,
+          width: 74,
+          height: 78.2,
         };
         console.log("📱 Using TABLET polaroid area");
       } else if (isSohamDevice) {
@@ -1394,8 +1392,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           "less";
         const appliedLensId =
           appliedGroupSize === "less"
-            ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
-            : "3d4c5e55-255e-4e92-8c93-24530158d072";
+            ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+            : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
         setTimeout(() => {
           setIsUploading(false);
@@ -1424,8 +1422,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           "less";
         const appliedLensId =
           appliedGroupSize === "less"
-            ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
-            : "3d4c5e55-255e-4e92-8c93-24530158d072";
+            ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+            : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
         setTimeout(() => {
           setIsUploading(false);
@@ -1457,8 +1455,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         "less";
       const appliedLensId =
         appliedGroupSize === "less"
-          ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
-          : "3d4c5e55-255e-4e92-8c93-24530158d072";
+          ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+          : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
       setTimeout(() => {
         setIsUploading(false);

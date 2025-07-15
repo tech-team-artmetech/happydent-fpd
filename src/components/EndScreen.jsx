@@ -21,13 +21,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   useEffect(() => {
     const playEndSound = () => {
       try {
-        const audio = new Audio('/assets/twinkle.mp3');
+        const audio = new Audio("/assets/twinkle.mp3");
         audio.volume = 0.7;
-        audio.play().catch(error => {
-          console.log('Sound play failed:', error);
+        audio.play().catch((error) => {
+          console.log("Sound play failed:", error);
         });
       } catch (error) {
-        console.log('Audio creation failed:', error);
+        console.log("Audio creation failed:", error);
       }
     };
 
@@ -37,10 +37,12 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   // Generate QR Code using API
   const generateQRCode = async (url) => {
     try {
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}`;
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
+        url
+      )}`;
       return qrApiUrl;
     } catch (error) {
-      console.error('QR generation failed:', error);
+      console.error("QR generation failed:", error);
       throw error;
     }
   };
@@ -53,9 +55,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
     // Get lens selection info
     const selectedGroupSize = localStorage.getItem("selectedGroupSize");
-    const selectedLensId = selectedGroupSize === "less"
-      ? "c9b9a62d-0a61-4e26-9db1-67133ff07b99"
-      : "3d4c5e55-255e-4e92-8c93-24530158d072";
+    const selectedLensId =
+      selectedGroupSize === "less"
+        ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+        : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
     if (phone && userId && userName) {
       setUserInfo({ phone, userId, userName });
@@ -77,7 +80,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setUserPhoto(cacheBustedUrl);
         setPhotoInfo({ hasPhoto: true, imageUrl: cacheBustedUrl });
       } else {
-        console.log("📷 No cached URL, constructing expected URL with counter:", currentCounter);
+        console.log(
+          "📷 No cached URL, constructing expected URL with counter:",
+          currentCounter
+        );
         const expectedImageUrl = `https://artmetech.co.in/api/uploads/enhanced_polaroid_${phone}_${currentCounter}.png?t=${Date.now()}`;
         console.log("📷 Expected image URL:", expectedImageUrl);
 
@@ -86,7 +92,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           console.log("✅ Expected image loaded successfully");
           setUserPhoto(expectedImageUrl);
           setPhotoInfo({ hasPhoto: true, imageUrl: expectedImageUrl });
-          localStorage.setItem("userPhoto", expectedImageUrl.split('?')[0]);
+          localStorage.setItem("userPhoto", expectedImageUrl.split("?")[0]);
         };
         img.onerror = () => {
           console.log("❌ Expected image failed, trying API fallback...");
@@ -112,8 +118,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setPhotoInfo(data.data);
         if (data.data.hasPhoto) {
           const currentCounter = localStorage.getItem("photoCounter") || "0";
-          const cacheBustedUrl = `${data.data.imageUrl}?counter=${currentCounter}&t=${Date.now()}`;
-          console.log("📷 API returned image, adding cache busting:", cacheBustedUrl);
+          const cacheBustedUrl = `${
+            data.data.imageUrl
+          }?counter=${currentCounter}&t=${Date.now()}`;
+          console.log(
+            "📷 API returned image, adding cache busting:",
+            cacheBustedUrl
+          );
           setUserPhoto(cacheBustedUrl);
           localStorage.setItem("userPhoto", data.data.imageUrl);
         }
@@ -218,13 +229,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
     try {
       // Try Web Bluetooth for direct printer connection
-      if ('bluetooth' in navigator && 'requestDevice' in navigator.bluetooth) {
+      if ("bluetooth" in navigator && "requestDevice" in navigator.bluetooth) {
         const device = await navigator.bluetooth.requestDevice({
           filters: [
-            { services: ['00001801-0000-1000-8000-00805f9b34fb'] }, // Generic Attribute
-            { services: ['0000180f-0000-1000-8000-00805f9b34fb'] }, // Battery Service
+            { services: ["00001801-0000-1000-8000-00805f9b34fb"] }, // Generic Attribute
+            { services: ["0000180f-0000-1000-8000-00805f9b34fb"] }, // Battery Service
           ],
-          optionalServices: ['00001800-0000-1000-8000-00805f9b34fb'] // Generic Access
+          optionalServices: ["00001800-0000-1000-8000-00805f9b34fb"], // Generic Access
         });
 
         if (device) {
@@ -235,7 +246,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       alert("Please connect a Bluetooth printer");
     } catch (error) {
-      console.error('Bluetooth print error:', error);
+      console.error("Bluetooth print error:", error);
       alert("Please connect a Bluetooth printer");
     }
   };
@@ -264,11 +275,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       }
 
       // Method 3: USB printer detection (as fallback for WiFi-connected USB printers)
-      if ('usb' in navigator && 'getDevices' in navigator.usb) {
+      if ("usb" in navigator && "getDevices" in navigator.usb) {
         const devices = await navigator.usb.getDevices();
-        const printerDevice = devices.find(device =>
-          device.deviceClass === 7 || // Printer class
-          (device.vendorId && [0x04B8, 0x04A9, 0x03F0, 0x0924].includes(device.vendorId)) // Epson, Canon, HP, Xerox
+        const printerDevice = devices.find(
+          (device) =>
+            device.deviceClass === 7 || // Printer class
+            (device.vendorId &&
+              [0x04b8, 0x04a9, 0x03f0, 0x0924].includes(device.vendorId)) // Epson, Canon, HP, Xerox
         );
 
         if (printerDevice) {
@@ -279,7 +292,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       alert("Please connect a WiFi printer");
     } catch (error) {
-      console.error('WiFi print error:', error);
+      console.error("WiFi print error:", error);
       alert("Please connect a WiFi printer");
     }
   };
@@ -288,14 +301,16 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   const sendToBluetooth = async (device, photoUrl) => {
     try {
       const server = await device.gatt.connect();
-      const service = await server.getPrimaryService('00001801-0000-1000-8000-00805f9b34fb');
+      const service = await server.getPrimaryService(
+        "00001801-0000-1000-8000-00805f9b34fb"
+      );
 
       // Convert image to ESC/POS commands
-      const imageBlob = await fetch(photoUrl).then(r => r.blob());
+      const imageBlob = await fetch(photoUrl).then((r) => r.blob());
       const escPosData = await convertToESCPOS(imageBlob);
 
       // Send to printer (simplified - actual implementation would need specific printer protocols)
-      console.log('Sent to Bluetooth printer');
+      console.log("Sent to Bluetooth printer");
       return true;
     } catch (error) {
       throw error;
@@ -310,14 +325,14 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       await device.claimInterface(0);
 
       // Convert image to printer-specific format
-      const imageBlob = await fetch(photoUrl).then(r => r.blob());
+      const imageBlob = await fetch(photoUrl).then((r) => r.blob());
       const printerData = await convertToPrinterFormat(imageBlob);
 
       // Send to USB printer
       await device.transferOut(1, printerData);
       await device.close();
 
-      console.log('Sent to USB printer');
+      console.log("Sent to USB printer");
       return true;
     } catch (error) {
       throw error;
@@ -336,9 +351,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         for (const port of commonPorts) {
           try {
             const response = await fetch(`http://${ip}:${port}/ipp/print`, {
-              method: 'OPTIONS',
-              mode: 'no-cors',
-              signal: AbortSignal.timeout(1000)
+              method: "OPTIONS",
+              mode: "no-cors",
+              signal: AbortSignal.timeout(1000),
             });
             printers.push({ ip, port });
           } catch (e) {
@@ -358,16 +373,20 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     try {
       // Use WebRTC to detect local IP
       const pc = new RTCPeerConnection({ iceServers: [] });
-      pc.createDataChannel('');
+      pc.createDataChannel("");
 
       const localIPs = [];
 
       return new Promise((resolve) => {
         pc.onicecandidate = (ice) => {
           if (ice.candidate) {
-            const ip = ice.candidate.candidate.split(' ')[4];
-            if (ip && ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.')) {
-              const baseIP = ip.split('.').slice(0, 3).join('.');
+            const ip = ice.candidate.candidate.split(" ")[4];
+            if (
+              (ip && ip.startsWith("192.168.")) ||
+              ip.startsWith("10.") ||
+              ip.startsWith("172.")
+            ) {
+              const baseIP = ip.split(".").slice(0, 3).join(".");
               // Generate IP range (e.g., 192.168.1.1 to 192.168.1.254)
               for (let i = 1; i < 255; i++) {
                 localIPs.push(`${baseIP}.${i}`);
@@ -376,7 +395,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           }
         };
 
-        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+        pc.createOffer().then((offer) => pc.setLocalDescription(offer));
 
         setTimeout(() => {
           pc.close();
@@ -384,7 +403,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         }, 2000);
       });
     } catch (error) {
-      return ['192.168.1.100', '192.168.0.100']; // Fallback common printer IPs
+      return ["192.168.1.100", "192.168.0.100"]; // Fallback common printer IPs
     }
   };
 
@@ -399,10 +418,12 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
     try {
       // Create a new window/tab for printing
-      const printWindow = window.open('', '_blank');
+      const printWindow = window.open("", "_blank");
 
       // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, '_') || 'user'}`;
+      const fileName = `whatta-chamking-smile-${
+        userInfo?.userName?.replace(/\s+/g, "_") || "user"
+      }`;
 
       // Write HTML content with the image
       printWindow.document.write(`
@@ -412,7 +433,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           <title>${fileName}</title>
           <style>
             @page {
-              size: 5in 7in;
+              size: 4in 6in;
               margin: 0;
               orientation: portrait;
             }
@@ -420,8 +441,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             body {
               margin: 0;
               padding: 0;
-              width: 5in;
-              height: 7in;
+              width: 4in;
+              height: 6in;
               display: flex;
               justify-content: center;
               align-items: center;
@@ -430,22 +451,22 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             }
             
             img {
-              max-width: 5in;
-              max-height: 7in;
+              max-width: 4in;
+              max-height: 6in;
               object-fit: contain;
               display: block;
             }
             
             @media print {
               @page {
-                size: 5in 7in !important;
+                size: 4in 6in !important;
                 margin: 0 !important;
                 orientation: portrait !important;
               }
               
               html, body { 
-                width: 5in !important;
-                height: 7in !important;
+                width: 4in !important;
+                height: 6in !important;
                 margin: 0 !important; 
                 padding: 0 !important;
                 background: white !important;
@@ -456,8 +477,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               }
               
               img { 
-                max-width: 5in !important; 
-                max-height: 7in !important;
+                max-width: 4in !important; 
+                max-height: 6in !important;
                 width: auto !important;
                 height: auto !important;
                 object-fit: contain !important;
@@ -497,7 +518,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       printWindow.document.close();
     } catch (error) {
-      console.error('Normal print error:', error);
+      console.error("Normal print error:", error);
       setError("Failed to open print dialog. Please try again.");
     }
   };
@@ -505,23 +526,26 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   // Send to network printer via IPP
   const sendToNetworkPrinter = async (printer, photoUrl) => {
     try {
-      const imageBlob = await fetch(photoUrl).then(r => r.blob());
+      const imageBlob = await fetch(photoUrl).then((r) => r.blob());
       const formData = new FormData();
-      formData.append('file', imageBlob, fileName);
+      formData.append("file", imageBlob, fileName);
 
-      const response = await fetch(`http://${printer.ip}:${printer.port}/ipp/print`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'application/ipp',
+      const response = await fetch(
+        `http://${printer.ip}:${printer.port}/ipp/print`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "application/ipp",
+          },
         }
-      });
+      );
 
       if (response.ok) {
-        console.log('Sent to network printer');
+        console.log("Sent to network printer");
         return true;
       }
-      throw new Error('Network print failed');
+      throw new Error("Network print failed");
     } catch (error) {
       throw error;
     }
@@ -531,8 +555,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   const tryAirPrint = async (photoUrl) => {
     try {
       // Create a canvas and draw the image
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
       const img = new Image();
 
       return new Promise((resolve, reject) => {
@@ -542,29 +566,35 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           ctx.drawImage(img, 0, 0);
 
           // Convert to blob
-          canvas.toBlob(async (blob) => {
-            try {
-              if (navigator.share && blob) {
-                const file = new File([blob], fileName, { type: 'image/jpeg' });
+          canvas.toBlob(
+            async (blob) => {
+              try {
+                if (navigator.share && blob) {
+                  const file = new File([blob], fileName, {
+                    type: "image/jpeg",
+                  });
 
-                // On iOS, this should show print option directly
-                await navigator.share({
-                  files: [file],
-                  title: 'Print Photo'
-                });
+                  // On iOS, this should show print option directly
+                  await navigator.share({
+                    files: [file],
+                    title: "Print Photo",
+                  });
 
-                resolve(true);
-              } else {
-                reject(new Error('Share API not available'));
+                  resolve(true);
+                } else {
+                  reject(new Error("Share API not available"));
+                }
+              } catch (shareError) {
+                reject(shareError);
               }
-            } catch (shareError) {
-              reject(shareError);
-            }
-          }, 'image/jpeg', 0.9);
+            },
+            "image/jpeg",
+            0.9
+          );
         };
 
-        img.onerror = () => reject(new Error('Image load failed'));
-        img.crossOrigin = 'anonymous';
+        img.onerror = () => reject(new Error("Image load failed"));
+        img.crossOrigin = "anonymous";
         img.src = photoUrl;
       });
     } catch (error) {
@@ -579,7 +609,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     const uint8Array = new Uint8Array(arrayBuffer);
 
     // ESC/POS print image command header
-    const header = new Uint8Array([0x1D, 0x76, 0x30, 0x00]);
+    const header = new Uint8Array([0x1d, 0x76, 0x30, 0x00]);
     const combined = new Uint8Array(header.length + uint8Array.length);
     combined.set(header);
     combined.set(uint8Array, header.length);
@@ -766,7 +796,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       // Force cache to load both lenses if needed
       if (hasValidARSession && cache && !cache.lenses?.loaded) {
-        console.log("🔄 Cache exists but lenses not loaded, forcing fresh session");
+        console.log(
+          "🔄 Cache exists but lenses not loaded, forcing fresh session"
+        );
 
         // Clear cache to force fresh session creation with both lenses
         if (cache.session) {
@@ -845,7 +877,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     console.log("Phone:", phone);
     console.log("Stored Session ID:", sessionId);
     console.log("Lens Info:", lensInfo);
-    console.log("Selected Group Size:", localStorage.getItem("selectedGroupSize"));
+    console.log(
+      "Selected Group Size:",
+      localStorage.getItem("selectedGroupSize")
+    );
     console.log("AR Cache:", window.snapARPreloadCache);
     console.log("Show QR:", showQR);
     console.log("QR URL:", qrCodeUrl);
@@ -877,7 +912,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-white max-w-[768px] mx-auto relative z-10 overflow-y-hidden">
-
       {/* Error Message */}
       {error && (
         <div className="mb-4 bg-red-500/20 border border-red-500/50 rounded p-3 text-center z-20">
@@ -890,15 +924,19 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         {showQR ? (
           <div className="text-center">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Scan to Download Your Photo</h3>
-              <p className="text-sm text-gray-300">Use your phone's camera to scan this QR code</p>
+              <h3 className="text-lg font-semibold mb-2">
+                Scan to Download Your Photo
+              </h3>
+              <p className="text-sm text-gray-300">
+                Use your phone's camera to scan this QR code
+              </p>
             </div>
             <div className="flex justify-center">
               <img
                 src={qrCodeUrl}
                 alt="QR Code"
                 className="object-contain rounded-lg bg-white p-4 mx-auto"
-                style={{ width: '300px', height: '300px' }}
+                style={{ width: "300px", height: "300px" }}
               />
             </div>
           </div>
@@ -906,7 +944,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           <img
             src={userPhoto || "/assets/enddummy.png"}
             alt="Result"
-            className="object-contain rounded-lg"
+            className="max-w-[550px]"
             onError={(e) => {
               e.target.src = "/assets/enddummy.png";
             }}
@@ -938,7 +976,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         )}
 
         {showQR && (
-
           <button
             onClick={handleNormalPrint}
             className="text-white text-sm font-bold cursor-pointer py-3 flex-1 flex items-center justify-center gap-1 text-white text-xl font-bold cursor-pointer py-3 w-80"
@@ -955,16 +992,23 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             }}
           >
             {/* Print Icon */}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polyline points="6,9 6,2 18,2 18,9"></polyline>
               <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2-2H20a2,2,0,0,1,2,2v5a2,2,0,0,1-2,2H18"></path>
               <polyline points="6,14 18,14 18,22 6,22 6,14"></polyline>
             </svg>
             PRINT
           </button>
-
         )}
-
 
         {/* Print Buttons Row - Only show when QR is displayed */}
         {showQR && (
@@ -1042,7 +1086,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               </svg>
               PRINT
             </button>
-
           </div>
         )}
 
