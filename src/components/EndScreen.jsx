@@ -8,6 +8,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   const [error, setError] = useState("");
   const [showQR, setShowQR] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [redirectTimer, setRedirectTimer] = useState(30);
+  const [showRedirectTimer, setShowRedirectTimer] = useState(false);
 
   // Store lens selection info
   const [lensInfo, setLensInfo] = useState({
@@ -33,6 +35,39 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
     playEndSound();
   }, []);
+
+  useEffect(() => {
+    // UNCOMMENT THE LINE BELOW TO ENABLE THE REDIRECT TIMER
+    // if (showQR) {
+    //   setShowRedirectTimer(true);
+    //   setRedirectTimer(30); // Reset timer when QR is shown
+    // } else {
+    //   setShowRedirectTimer(false);
+    // }
+
+    if (!showRedirectTimer || !showQR) return;
+
+    const timer = setInterval(() => {
+      setRedirectTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          // Direct redirect to splash screen
+          console.log("Redirecting directly to splash screen...");
+
+          // Clear all localStorage data
+          localStorage.clear();
+
+          // Direct reload to start fresh from splash
+          window.location.reload();
+
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [showRedirectTimer, showQR]);
 
   // Generate QR Code using API
   const generateQRCode = async (url) => {
@@ -118,9 +153,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setPhotoInfo(data.data);
         if (data.data.hasPhoto) {
           const currentCounter = localStorage.getItem("photoCounter") || "0";
-          const cacheBustedUrl = `${
-            data.data.imageUrl
-          }?counter=${currentCounter}&t=${Date.now()}`;
+          const cacheBustedUrl = `${data.data.imageUrl
+            }?counter=${currentCounter}&t=${Date.now()}`;
           console.log(
             "📷 API returned image, adding cache busting:",
             cacheBustedUrl
@@ -421,9 +455,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const printWindow = window.open("", "_blank");
 
       // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${
-        userInfo?.userName?.replace(/\s+/g, "_") || "user"
-      }`;
+      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, "_") || "user"
+        }`;
 
       // Write HTML content with the image
       printWindow.document.write(`
@@ -1136,6 +1169,15 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           </button>
         )}
       </div>
+      {showQR && showRedirectTimer && redirectTimer > 0 && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30">
+          <div className="text-white px-4 py-2 rounded-lg border border-white/20 backdrop-blur-sm">
+            <p className="text-sm font-medium">
+              Redirecting in {redirectTimer}...
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

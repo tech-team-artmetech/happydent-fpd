@@ -1055,7 +1055,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         console.log("⏰ Fallback timer - showing PROCEED button");
         stopRedDemonDetection();
         setShowCaptureButton(true);
-      }, 15000); // 15 seconds fallback
+      }, 40000); // 15 seconds fallback
     } catch (err) {
       throw new Error(`Canvas setup failed: ${err.message}`);
     }
