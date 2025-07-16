@@ -686,111 +686,116 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
   // Handle Normal Print button click
   const handleNormalPrint = async () => {
-    if (!userPhoto && !photoInfo?.imageUrl) {
+    // Get the S3 image URL from localStorage
+    const s3ImageUrl = localStorage.getItem("userPhoto");
+
+    if (!s3ImageUrl && !userPhoto && !photoInfo?.imageUrl) {
       setError("No photo available to print.");
       return;
     }
 
-    const photoUrl = userPhoto || photoInfo?.imageUrl;
+    // Priority: localStorage S3 URL > userPhoto > photoInfo.imageUrl
+    const photoUrl = s3ImageUrl || userPhoto || photoInfo?.imageUrl;
+
+    console.log("🖨️ Printing S3 image from localStorage:", photoUrl);
 
     try {
       // Create a new window/tab for printing
       const printWindow = window.open("", "_blank");
 
       // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, "_") || "user"
-        }`;
+      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, "_") || "user"}`;
 
-      // Write HTML content with the image
+      // Write HTML content with the S3 image
       printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${fileName}</title>
-          <style>
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>${fileName}</title>
+        <style>
+          @page {
+            size: 4in 6in;
+            margin: 0;
+            orientation: portrait;
+          }
+          
+          body {
+            margin: 0;
+            padding: 0;
+            width: 4in;
+            height: 6in;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            overflow: hidden;
+          }
+          
+          img {
+            max-width: 4in;
+            max-height: 6in;
+            object-fit: contain;
+            display: block;
+          }
+          
+          @media print {
             @page {
-              size: 4in 6in;
-              margin: 0;
-              orientation: portrait;
+              size: 4in 6in !important;
+              margin: 0 !important;
+              orientation: portrait !important;
             }
             
-            body {
-              margin: 0;
-              padding: 0;
-              width: 4in;
-              height: 6in;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background: white;
-              overflow: hidden;
+            html, body { 
+              width: 4in !important;
+              height: 6in !important;
+              margin: 0 !important; 
+              padding: 0 !important;
+              background: white !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              overflow: hidden !important;
+              page-break-after: avoid !important;
             }
             
-            img {
-              max-width: 4in;
-              max-height: 6in;
-              object-fit: contain;
-              display: block;
+            img { 
+              max-width: 4in !important; 
+              max-height: 6in !important;
+              width: auto !important;
+              height: auto !important;
+              object-fit: contain !important;
+              page-break-inside: avoid !important;
+              page-break-before: avoid !important;
+              page-break-after: avoid !important;
+              display: block !important;
+              /* Enhanced print quality */
+              filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
+              image-rendering: -webkit-optimize-contrast !important;
+              image-rendering: crisp-edges !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
             
-            @media print {
-              @page {
-                size: 4in 6in !important;
-                margin: 0 !important;
-                orientation: portrait !important;
-              }
-              
-              html, body { 
-                width: 4in !important;
-                height: 6in !important;
-                margin: 0 !important; 
-                padding: 0 !important;
-                background: white !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                overflow: hidden !important;
-                page-break-after: avoid !important;
-              }
-              
-              img { 
-                max-width: 4in !important; 
-                max-height: 6in !important;
-                width: auto !important;
-                height: auto !important;
-                object-fit: contain !important;
-                page-break-inside: avoid !important;
-                page-break-before: avoid !important;
-                page-break-after: avoid !important;
-                display: block !important;
-                /* Enhanced print quality */
-                filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
-                image-rendering: -webkit-optimize-contrast !important;
-                image-rendering: crisp-edges !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-              }
-              
-              /* Force single page */
-              * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                page-break-inside: avoid !important;
-                orphans: 1 !important;
-                widows: 1 !important;
-              }
-              
-              /* Hide everything that might cause page breaks */
-              body > *:not(img) {
-                display: none !important;
-              }
+            /* Force single page */
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              page-break-inside: avoid !important;
+              orphans: 1 !important;
+              widows: 1 !important;
             }
-          </style>
-        </head>
-        <body>
-          <img src="${photoUrl}" alt="Photo to print" onload="window.print(); window.close();" />
-        </body>
-      </html>
-    `);
+            
+            /* Hide everything that might cause page breaks */
+            body > *:not(img) {
+              display: none !important;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <img src="${photoUrl}" alt="S3 Photo to print" onload="window.print(); window.close();" />
+      </body>
+    </html>
+  `);
 
       printWindow.document.close();
     } catch (error) {
