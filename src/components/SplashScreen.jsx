@@ -440,14 +440,13 @@ const SplashScreen = ({ onComplete }) => {
           {Math.round(loadingProgress)}%
         </p> */}
         <p
-          className={`text-center text-xl font-bold transition-all duration-300 ${
-            showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          // style={{
-          //   transform:
-          //     showLoadingContent && imagesLoaded ? "scale(1)" : "scale(0)",
-          //   transformOrigin: "center",
-          // }}
+          className={`text-center text-xl font-bold transition-all duration-300 ${showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
+            }`}
+        // style={{
+        //   transform:
+        //     showLoadingContent && imagesLoaded ? "scale(1)" : "scale(0)",
+        //   transformOrigin: "center",
+        // }}
         >
           {Math.round(loadingProgress)}%
         </p>
@@ -458,9 +457,8 @@ const SplashScreen = ({ onComplete }) => {
         <button
           onClick={handleTapToBegin}
           disabled={sessionState.isCreating}
-          className={`text-white text-[18px] ctaBtn font-gotham font-medium italic transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
-            showFinalContent ? "opacity-100" : "opacity-0"
-          }`}
+          className={`text-white text-[18px] ctaBtn font-gotham font-medium italic transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${showFinalContent ? "opacity-100" : "opacity-0"
+            }`}
           style={{
             visibility: showFinalContent ? "visible" : "hidden",
             background:

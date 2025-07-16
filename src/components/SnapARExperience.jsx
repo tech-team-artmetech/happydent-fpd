@@ -7,6 +7,8 @@ const isTablet =
 const isSohamDevice =
   window.innerWidth >= 350 && window.innerWidth <= 414 && !isTablet;
 
+
+
 // Enhanced Canvas Management - NO CONTEXT ACCESS
 const enhanceCanvas = (canvas) => {
   if (!canvas) return;
@@ -107,6 +109,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
   const [isUploading, setIsUploading] = useState(false);
   const [showEndScreen, setShowEndScreen] = useState(false);
+
+
 
   // 🔴 RED DEMON DETECTION: Ultra-efficient pixel scanning
   const [redDemonDetection, setRedDemonDetection] = useState({
@@ -1188,175 +1192,917 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
     return () => clearInterval(fallbackTimer);
   }, [sessionId, sseConnected]);
 
-  const captureAndUpload = async () => {
-    console.log(
-      "📸 🚀 PROCEED CLICKED - Starting immediate capture and upload process..."
-    );
-    setIsUploading(true);
+  // const captureAndUpload = async () => {
+  //   console.log(
+  //     "📸 🚀 PROCEED CLICKED - Starting immediate capture and upload process..."
+  //   );
+  //   setIsUploading(true);
 
-    // 🔧 CRITICAL: Update counter FIRST before any processing
+  //   // 🔧 CRITICAL: Update counter FIRST before any processing
+  //   const currentCounter = localStorage.getItem("photoCounter") || "0";
+  //   const newCounter = currentCounter === "0" ? "1" : "0";
+
+  //   console.log(`🔄 PROCEED: Counter UPDATE ${currentCounter} → ${newCounter}`);
+  //   localStorage.setItem("photoCounter", newCounter);
+  //   console.log(`✅ PROCEED: Counter immediately updated to: ${newCounter}`);
+
+  //   // Try multiple ways to get the AR canvas
+  //   let canvas = null;
+
+  //   // Method 1: Use canvasRef
+  //   if (canvasRef.current) {
+  //     canvas = canvasRef.current;
+  //   }
+
+  //   // Method 2: Get from canvas placeholder
+  //   if (!canvas && canvasPlaceholderRef.current) {
+  //     canvas = canvasPlaceholderRef.current.querySelector("canvas");
+  //   }
+
+  //   // Method 3: Get from cache session
+  //   if (!canvas && window.snapARPreloadCache?.session?.output?.live) {
+  //     canvas = window.snapARPreloadCache.session.output.live;
+  //   }
+
+  //   // Method 4: Find any canvas with ID
+  //   if (!canvas) {
+  //     canvas =
+  //       document.getElementById("canvas") || document.querySelector("#canvas");
+  //   }
+
+  //   if (!canvas || !userData?.phone || isCapturing) {
+  //     console.log("❌ Cannot capture:", {
+  //       hasCanvas: !!canvas,
+  //       canvasType: canvas?.tagName,
+  //       hasPhone: !!userData?.phone,
+  //       isCapturing: isCapturing,
+  //       containerRefType: containerRef.current?.tagName,
+  //       containerHasCanvas: !!containerRef.current?.querySelector("canvas"),
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsCapturing(true);
+  //     setAutoCapturing(true);
+  //     console.log("📸 Starting enhanced polaroid capture process...");
+
+  //     // 🎨 ENHANCE CANVAS ONE MORE TIME BEFORE CAPTURE
+  //     enhanceCanvas(canvas);
+
+  //     // Wait a moment for canvas to be stable
+  //     await new Promise((resolve) => setTimeout(resolve, 100));
+
+  //     // Get canvas dimensions
+  //     const canvasWidth = canvas.width || canvas.clientWidth || 0;
+  //     const canvasHeight = canvas.height || canvas.clientHeight || 0;
+
+  //     if (canvasWidth === 0 || canvasHeight === 0) {
+  //       throw new Error(
+  //         `Canvas has invalid dimensions: ${canvasWidth}x${canvasHeight}`
+  //       );
+  //     }
+
+  //     let polaroidArea;
+
+  //     if (isTablet) {
+  //       // Condition 1: Tablet devices
+  //       polaroidArea = {
+  //         x: 13.3,
+  //         y: 4.5,
+  //         width: 74,
+  //         height: 78.2,
+  //       };
+  //       console.log("📱 Using TABLET polaroid area");
+  //     } else if (isSohamDevice) {
+  //       // Condition 2: Soham's specific device (only applies if NOT tablet)
+  //       polaroidArea = {
+  //         x: 0,
+  //         y: 10,
+  //         width: 100,
+  //         height: 70,
+  //       };
+  //       console.log("📱 Using SOHAM DEVICE polaroid area");
+  //     } else {
+  //       // Condition 3: All other devices (default)
+  //       polaroidArea = {
+  //         x: 2,
+  //         y: 10,
+  //         width: 96,
+  //         height: 72,
+  //       };
+  //       console.log("📱 Using DEFAULT polaroid area");
+  //     }
+
+  //     const captureArea = {
+  //       x: Math.floor((canvasWidth * polaroidArea.x) / 100),
+  //       y: Math.floor((canvasHeight * polaroidArea.y) / 100),
+  //       width: Math.floor((canvasWidth * polaroidArea.width) / 100),
+  //       height: Math.floor((canvasHeight * polaroidArea.height) / 100),
+  //     };
+
+  //     const tempCanvas = document.createElement("canvas");
+  //     const tempCtx = tempCanvas.getContext("2d");
+
+  //     // 🚀 ENHANCE TEMPORARY CANVAS TOO
+  //     tempCtx.imageSmoothingEnabled = true;
+  //     tempCtx.imageSmoothingQuality = "high";
+
+  //     const enlargedWidth = Math.floor(captureArea.width * 1.3);
+  //     const enlargedHeight = Math.floor(captureArea.height * 1.3);
+
+  //     tempCanvas.width = enlargedWidth;
+  //     tempCanvas.height = enlargedHeight;
+
+  //     // Draw the image
+  //     tempCtx.drawImage(
+  //       canvas,
+  //       captureArea.x,
+  //       captureArea.y,
+  //       captureArea.width,
+  //       captureArea.height,
+  //       0,
+  //       0,
+  //       enlargedWidth,
+  //       enlargedHeight
+  //     );
+
+  //     // 🏆 CAPTURE WITH HIGHER QUALITY
+  //     const blob = await new Promise((resolve, reject) => {
+  //       tempCanvas.toBlob(
+  //         (result) => {
+  //           if (result) {
+  //             resolve(result);
+  //           } else {
+  //             reject(new Error("Failed to create blob from canvas"));
+  //           }
+  //         },
+  //         "image/png",
+  //         1.0
+  //       );
+  //     });
+
+  //     if (blob.size === 0) {
+  //       throw new Error("Generated blob is empty");
+  //     }
+
+  //     console.log("✅ Enhanced blob created successfully, size:", blob.size);
+
+  //     // 🔧 Use the counter that was already updated at the start
+  //     console.log(
+  //       `📸 PROCEED: Using updated counter for upload: ${newCounter}`
+  //     );
+
+  //     const formData = new FormData();
+  //     formData.append(
+  //       "photo",
+  //       blob,
+  //       `${userData.phone}_snapchat_polaroid_${newCounter}.png`
+  //     );
+  //     formData.append("phone", userData.phone);
+  //     formData.append("source", "snapchat_polaroid");
+  //     formData.append("counter", newCounter);
+
+  //     const response = await fetch("https://artmetech.co.in/api/upload-photo", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     const result = await response.json();
+
+  //     if (result.success) {
+  //       console.log("✅ Enhanced upload successful:", result.data.imageUrl);
+
+  //       // 🔧 IMPORTANT: Counter was already updated before upload
+  //       console.log(`✅ Photo saved with counter: ${newCounter}`);
+  //       console.log(`📷 Server returned URL: ${result.data.imageUrl}`);
+
+  //       // 🔧 CRITICAL: Update the stored URL to match the actual filename with counter
+  //       // The server returns the base URL, but we need to store the URL with the correct counter
+  //       const baseUrl = result.data.imageUrl.split("_").slice(0, -1).join("_"); // Remove old counter part
+  //       const updatedImageUrl = `${baseUrl}_${newCounter}.png`;
+
+  //       localStorage.setItem("userPhoto", updatedImageUrl);
+  //       console.log(`💾 Stored counter-based image URL: ${updatedImageUrl}`);
+
+  //       // Get the applied lens ID dynamically
+  //       const appliedGroupSize =
+  //         userData?.groupSize ||
+  //         localStorage.getItem("selectedGroupSize") ||
+  //         "less";
+  //       const appliedLensId =
+  //         appliedGroupSize === "less"
+  //           ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+  //           : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+
+  //       setTimeout(() => {
+  //         setIsUploading(false);
+  //         setShowEndScreen(true);
+  //         onComplete({
+  //           ...userData,
+  //           photo: result.data.imageUrl,
+  //           timestamp: new Date().toISOString(),
+  //           lensId: appliedLensId,
+  //           groupSize: appliedGroupSize,
+  //           captureMode: "enhanced_polaroid",
+  //           uploadSuccess: true,
+  //           photoCounter: newCounter,
+  //         });
+  //       }, 2000);
+  //     } else {
+  //       // Handle upload failure - revert counter since upload failed
+  //       console.log("❌ PROCEED: Upload failed, reverting counter");
+  //       const revertedCounter = newCounter === "0" ? "1" : "0"; // Revert back
+  //       localStorage.setItem("photoCounter", revertedCounter);
+  //       console.log(`🔄 PROCEED: Counter reverted to: ${revertedCounter}`);
+
+  //       const appliedGroupSize =
+  //         userData?.groupSize ||
+  //         localStorage.getItem("selectedGroupSize") ||
+  //         "less";
+  //       const appliedLensId =
+  //         appliedGroupSize === "less"
+  //           ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+  //           : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+
+  //       setTimeout(() => {
+  //         setIsUploading(false);
+  //         setShowEndScreen(true);
+  //         onComplete({
+  //           ...userData,
+  //           photo: "upload-failed",
+  //           timestamp: new Date().toISOString(),
+  //           lensId: appliedLensId,
+  //           groupSize: appliedGroupSize,
+  //           captureMode: "enhanced_polaroid",
+  //           uploadSuccess: false,
+  //           errorMessage: result.message,
+  //         });
+  //       }, 2400);
+  //     }
+  //   } catch (error) {
+  //     // Handle capture/upload error - revert counter since upload failed
+  //     console.log("❌ PROCEED: Capture/upload error, reverting counter");
+  //     const revertedCounter = newCounter === "0" ? "1" : "0"; // Revert back
+  //     localStorage.setItem("photoCounter", revertedCounter);
+  //     console.log(
+  //       `🔄 PROCEED: Counter reverted to: ${revertedCounter} due to error`
+  //     );
+
+  //     const appliedGroupSize =
+  //       userData?.groupSize ||
+  //       localStorage.getItem("selectedGroupSize") ||
+  //       "less";
+  //     const appliedLensId =
+  //       appliedGroupSize === "less"
+  //         ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+  //         : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+
+  //     setTimeout(() => {
+  //       setIsUploading(false);
+  //       setShowEndScreen(true);
+  //       onComplete({
+  //         ...userData,
+  //         photo: "capture-failed",
+  //         timestamp: new Date().toISOString(),
+  //         lensId: appliedLensId,
+  //         groupSize: appliedGroupSize,
+  //         captureMode: "enhanced_polaroid",
+  //         uploadSuccess: false,
+  //         errorMessage: error.message,
+  //       });
+  //     }, 1000);
+  //   }
+  // };
+
+  // Add these state variables to your component
+  const [isCompositingImage, setIsCompositingImage] = useState(false);
+  const [compositeStatus, setCompositeStatus] = useState('');
+  const [isRemovingBg, setIsRemovingBg] = useState(false);
+
+  // Function to create polaroid composite
+  // const createPolaroidComposite = async (backgroundRemovedBlob, polaroidFrameUrl) => {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       console.log("🖼️ Starting polaroid composite creation...");
+
+  //       // Create canvas for compositing
+  //       const compositeCanvas = document.createElement('canvas');
+  //       const ctx = compositeCanvas.getContext('2d');
+
+  //       // Set canvas dimensions (adjust based on your polaroid frame size)
+  //       const POLAROID_WIDTH = 400; // Adjust to your frame size
+  //       const POLAROID_HEIGHT = 500; // Adjust to your frame size
+
+  //       compositeCanvas.width = POLAROID_WIDTH;
+  //       compositeCanvas.height = POLAROID_HEIGHT;
+
+  //       // Enable high quality rendering
+  //       ctx.imageSmoothingEnabled = true;
+  //       ctx.imageSmoothingQuality = 'high';
+
+  //       let imagesLoaded = 0;
+  //       const totalImages = 2;
+
+  //       // Load background-removed image
+  //       const bgRemovedImg = new Image();
+  //       bgRemovedImg.crossOrigin = 'anonymous';
+
+  //       // Load polaroid frame
+  //       const polaroidFrame = new Image();
+  //       polaroidFrame.crossOrigin = 'anonymous';
+
+  //       const checkComplete = () => {
+  //         imagesLoaded++;
+  //         if (imagesLoaded === totalImages) {
+  //           try {
+  //             // Clear canvas with transparent background
+  //             ctx.clearRect(0, 0, POLAROID_WIDTH, POLAROID_HEIGHT);
+
+  //             // Step 1: Draw the background-removed image (z-index 0 equivalent)
+  //             // Calculate positioning to center the image in the polaroid "photo area"
+  //             const photoAreaX = 40; // Adjust based on your frame design
+  //             const photoAreaY = 40; // Adjust based on your frame design
+  //             const photoAreaWidth = POLAROID_WIDTH - 80; // Adjust based on your frame design
+  //             const photoAreaHeight = POLAROID_HEIGHT - 120; // Adjust based on your frame design
+
+  //             // Calculate scaling to fit image in photo area while maintaining aspect ratio
+  //             const imgAspectRatio = bgRemovedImg.width / bgRemovedImg.height;
+  //             const areaAspectRatio = photoAreaWidth / photoAreaHeight;
+
+  //             let drawWidth, drawHeight, drawX, drawY;
+
+  //             if (imgAspectRatio > areaAspectRatio) {
+  //               // Image is wider than area
+  //               drawWidth = photoAreaWidth;
+  //               drawHeight = photoAreaWidth / imgAspectRatio;
+  //               drawX = photoAreaX;
+  //               drawY = photoAreaY + (photoAreaHeight - drawHeight) / 2;
+  //             } else {
+  //               // Image is taller than area
+  //               drawHeight = photoAreaHeight;
+  //               drawWidth = photoAreaHeight * imgAspectRatio;
+  //               drawX = photoAreaX + (photoAreaWidth - drawWidth) / 2;
+  //               drawY = photoAreaY;
+  //             }
+
+  //             // Draw the background-removed image
+  //             ctx.drawImage(bgRemovedImg, drawX, drawY, drawWidth, drawHeight);
+
+  //             // Step 2: Draw the polaroid frame on top (z-index 1 equivalent)
+  //             ctx.drawImage(polaroidFrame, 0, 0, POLAROID_WIDTH, POLAROID_HEIGHT);
+
+  //             // Convert to blob
+  //             compositeCanvas.toBlob((blob) => {
+  //               if (blob) {
+  //                 console.log("✅ Polaroid composite created successfully, size:", blob.size);
+  //                 resolve(blob);
+  //               } else {
+  //                 reject(new Error("Failed to create composite blob"));
+  //               }
+  //             }, 'image/png', 1.0);
+
+  //           } catch (drawError) {
+  //             reject(new Error(`Failed to draw composite: ${drawError.message}`));
+  //           }
+  //         }
+  //       };
+
+  //       // Handle image loading
+  //       bgRemovedImg.onload = checkComplete;
+  //       bgRemovedImg.onerror = () => reject(new Error("Failed to load background-removed image"));
+
+  //       polaroidFrame.onload = checkComplete;
+  //       polaroidFrame.onerror = () => reject(new Error("Failed to load polaroid frame"));
+
+  //       // Start loading images
+  //       // Convert blob to URL for background-removed image
+  //       const bgRemovedUrl = URL.createObjectURL(backgroundRemovedBlob);
+  //       bgRemovedImg.src = bgRemovedUrl;
+
+  //       // Load polaroid frame (you need to provide the frame image URL)
+  //       polaroidFrame.src = polaroidFrameUrl;
+
+  //       // Cleanup URL after use
+  //       setTimeout(() => {
+  //         URL.revokeObjectURL(bgRemovedUrl);
+  //       }, 10000);
+
+  //     } catch (error) {
+  //       reject(new Error(`Composite creation failed: ${error.message}`));
+  //     }
+  //   });
+  // };
+
+  // Simplified captureAndUpload function - just screenshot → remove BG → end screen
+  // Add this composite function before your captureAndUpload function
+  // Add this composite function before your captureAndUpload function
+  // Add this composite function before your captureAndUpload function
+  const createPolaroidComposite = async (backgroundRemovedBlob, polaroidFrameUrl) => {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log("🖼️ Starting polaroid composite creation...");
+
+        // Create canvas for compositing
+        const compositeCanvas = document.createElement('canvas');
+        const ctx = compositeCanvas.getContext('2d');
+
+        // Set canvas dimensions (adjust based on your polaroid frame size)
+        const POLAROID_WIDTH = 400;
+        const POLAROID_HEIGHT = 500;
+
+        compositeCanvas.width = POLAROID_WIDTH;
+        compositeCanvas.height = POLAROID_HEIGHT;
+
+        // Enable high quality rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        let imagesLoaded = 0;
+        const totalImages = 2;
+
+        // Load background-removed image
+        const bgRemovedImg = new Image();
+        bgRemovedImg.crossOrigin = 'anonymous';
+
+        // Load polaroid frame
+        const polaroidFrame = new Image();
+        polaroidFrame.crossOrigin = 'anonymous';
+
+        const checkComplete = () => {
+          imagesLoaded++;
+          if (imagesLoaded === totalImages) {
+            try {
+              // Clear canvas with transparent background
+              ctx.clearRect(0, 0, POLAROID_WIDTH, POLAROID_HEIGHT);
+
+              // Step 1: Draw the background-removed image (z-index 1 - behind frame)
+              // Calculate positioning to center the image in the polaroid "photo area"
+              const photoAreaX = 0; // Adjust based on your frame design
+              const photoAreaY = 0; // Adjust based on your frame design
+              const photoAreaWidth = POLAROID_WIDTH - 20; // Adjust based on your frame design
+              const photoAreaHeight = POLAROID_HEIGHT - 20; // Adjust based on your frame design
+
+              // Calculate scaling to fit image in photo area while maintaining aspect ratio
+              const imgAspectRatio = bgRemovedImg.width / bgRemovedImg.height;
+              const areaAspectRatio = photoAreaWidth / photoAreaHeight;
+
+              let drawWidth, drawHeight, drawX, drawY;
+
+              if (imgAspectRatio > areaAspectRatio) {
+                // Image is wider than area
+                drawWidth = photoAreaWidth;
+                drawHeight = photoAreaWidth / imgAspectRatio;
+                drawX = photoAreaX;
+                drawY = photoAreaY + (photoAreaHeight - drawHeight) / 2;
+              } else {
+                // Image is taller than area
+                drawHeight = photoAreaHeight;
+                drawWidth = photoAreaHeight * imgAspectRatio;
+                drawX = photoAreaX + (photoAreaWidth - drawWidth) / 2;
+                drawY = photoAreaY;
+              }
+
+              console.log("🖼️ Drawing background-removed image:", { drawX, drawY, drawWidth, drawHeight });
+
+              // Draw the background-removed image (z-index 1)
+              ctx.drawImage(bgRemovedImg, drawX, drawY, drawWidth, drawHeight);
+
+              // Step 2: Draw the polaroid frame on top (z-index 0 - in front)
+              console.log("🖼️ Drawing polaroid frame on top");
+              ctx.drawImage(polaroidFrame, 0, 0, POLAROID_WIDTH, POLAROID_HEIGHT);
+
+              // Convert to blob
+              compositeCanvas.toBlob((blob) => {
+                if (blob) {
+                  console.log("✅ Polaroid composite created successfully, size:", blob.size);
+                  resolve(blob);
+                } else {
+                  reject(new Error("Failed to create composite blob"));
+                }
+              }, 'image/png', 1.0);
+
+            } catch (drawError) {
+              reject(new Error(`Failed to draw composite: ${drawError.message}`));
+            }
+          }
+        };
+
+        // Handle image loading
+        bgRemovedImg.onload = checkComplete;
+        bgRemovedImg.onerror = () => reject(new Error("Failed to load background-removed image"));
+
+        polaroidFrame.onload = checkComplete;
+        polaroidFrame.onerror = () => reject(new Error("Failed to load polaroid frame"));
+
+        // Start loading images
+        // Convert blob to URL for background-removed image
+        const bgRemovedUrl = URL.createObjectURL(backgroundRemovedBlob);
+        bgRemovedImg.src = bgRemovedUrl;
+
+        // Load polaroid frame
+        polaroidFrame.src = polaroidFrameUrl;
+
+        // Cleanup URL after use
+        setTimeout(() => {
+          URL.revokeObjectURL(bgRemovedUrl);
+        }, 10000);
+
+      } catch (error) {
+        reject(new Error(`Composite creation failed: ${error.message}`));
+      }
+    });
+  };
+
+  // Updated captureAndUpload function with polaroid composite
+  // const captureAndUpload = async () => {
+  //   console.log("📸 🚀 PROCEED CLICKED - Starting capture with background removal and polaroid composite...");
+  //   setIsUploading(true);
+  //   setIsRemovingBg(true);
+  //   setCompositeStatus('Capturing screenshot...');
+
+  //   // Update counter FIRST
+  //   const currentCounter = localStorage.getItem("photoCounter") || "0";
+  //   const newCounter = currentCounter === "0" ? "1" : "0";
+  //   localStorage.setItem("photoCounter", newCounter);
+
+  //   // Get canvas
+  //   let canvas = null;
+  //   if (canvasRef.current) {
+  //     canvas = canvasRef.current;
+  //   } else if (canvasPlaceholderRef.current) {
+  //     canvas = canvasPlaceholderRef.current.querySelector("canvas");
+  //   } else if (window.snapARPreloadCache?.session?.output?.live) {
+  //     canvas = window.snapARPreloadCache.session.output.live;
+  //   } else {
+  //     canvas = document.getElementById("canvas") || document.querySelector("#canvas");
+  //   }
+
+  //   if (!canvas || !userData?.phone || isCapturing) {
+  //     setIsUploading(false);
+  //     setIsRemovingBg(false);
+  //     setCompositeStatus('');
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsCapturing(true);
+  //     setAutoCapturing(true);
+
+  //     // Enhance canvas
+  //     enhanceCanvas(canvas);
+  //     await new Promise((resolve) => setTimeout(resolve, 100));
+
+  //     // Get canvas dimensions
+  //     const canvasWidth = canvas.width || canvas.clientWidth || 0;
+  //     const canvasHeight = canvas.height || canvas.clientHeight || 0;
+
+  //     if (canvasWidth === 0 || canvasHeight === 0) {
+  //       throw new Error(`Canvas has invalid dimensions: ${canvasWidth}x${canvasHeight}`);
+  //     }
+
+  //     // Perfect capture area (from your settings)
+  //     let polaroidArea;
+  //     if (isTablet) {
+  //       polaroidArea = { x: 18, y: 25, width: 65, height: 40 };
+  //     } else if (isSohamDevice) {
+  //       polaroidArea = { x: 0, y: 10, width: 100, height: 70 };
+  //     } else {
+  //       polaroidArea = { x: 18, y: 25, width: 65, height: 38 };
+  //     }
+
+  //     console.log("📊 Capture area values:", polaroidArea);
+
+  //     const captureArea = {
+  //       x: Math.floor((canvasWidth * polaroidArea.x) / 100),
+  //       y: Math.floor((canvasHeight * polaroidArea.y) / 100),
+  //       width: Math.floor((canvasWidth * polaroidArea.width) / 100),
+  //       height: Math.floor((canvasWidth * polaroidArea.height) / 100),
+  //     };
+
+  //     // Create cropped image
+  //     const tempCanvas = document.createElement("canvas");
+  //     const tempCtx = tempCanvas.getContext("2d");
+  //     tempCtx.imageSmoothingEnabled = true;
+  //     tempCtx.imageSmoothingQuality = "high";
+
+  //     const enlargedWidth = Math.floor(captureArea.width * 1.3);
+  //     const enlargedHeight = Math.floor(captureArea.height * 1.3);
+  //     tempCanvas.width = enlargedWidth;
+  //     tempCanvas.height = enlargedHeight;
+
+  //     // Draw the cropped image
+  //     tempCtx.drawImage(
+  //       canvas,
+  //       captureArea.x, captureArea.y, captureArea.width, captureArea.height,
+  //       0, 0, enlargedWidth, enlargedHeight
+  //     );
+
+  //     // Convert to blob
+  //     const croppedBlob = await new Promise((resolve, reject) => {
+  //       tempCanvas.toBlob((result) => {
+  //         if (result) resolve(result);
+  //         else reject(new Error("Failed to create cropped blob"));
+  //       }, "image/png", 1.0);
+  //     });
+
+  //     console.log("✅ Cropped screenshot created, size:", croppedBlob.size);
+
+  //     // STEP 1: Remove background from cropped image
+  //     setCompositeStatus('Removing background...');
+  //     console.log("🎨 Starting background removal...");
+
+  //     let backgroundRemovedBlob = croppedBlob; // Default fallback
+  //     let backgroundRemoved = false;
+
+  //     try {
+  //       const bgRemovalFormData = new FormData();
+  //       bgRemovalFormData.append("image", croppedBlob, `${userData.phone}_screenshot.png`);
+  //       bgRemovalFormData.append("phone", userData.phone);
+  //       bgRemovalFormData.append("counter", newCounter);
+
+  //       const bgRemovalResponse = await fetch("https://artmetech.co.in/api/remove-bg", {
+  //         method: "POST",
+  //         body: bgRemovalFormData,
+  //       });
+
+  //       if (bgRemovalResponse.ok) {
+  //         const bgRemovalResult = await bgRemovalResponse.json();
+
+  //         if (bgRemovalResult.success) {
+  //           console.log("✅ Background removal API successful:", bgRemovalResult.data.imageUrl);
+
+  //           // Download the background-removed PNG
+  //           const processedImageResponse = await fetch(bgRemovalResult.data.imageUrl);
+  //           if (processedImageResponse.ok) {
+  //             backgroundRemovedBlob = await processedImageResponse.blob();
+  //             backgroundRemoved = true;
+  //             console.log("✅ Background removal successful, size:", backgroundRemovedBlob.size);
+  //           } else {
+  //             console.warn("⚠️ Failed to download processed image, using original");
+  //           }
+  //         } else {
+  //           console.warn("⚠️ Background removal API failed, using original");
+  //         }
+  //       } else {
+  //         console.warn("⚠️ Background removal request failed, using original");
+  //       }
+  //     } catch (bgError) {
+  //       console.warn("⚠️ Background removal error, using original:", bgError.message);
+  //     }
+
+  //     // STEP 2: Create polaroid composite
+  //     setCompositeStatus('Creating polaroid composite...');
+  //     setIsCompositingImage(true);
+  //     console.log("🖼️ Starting polaroid composite creation...");
+
+  //     // Your polaroid frame URL
+  //     const POLAROID_FRAME_URL = "/assets/enddummy.png";
+
+  //     let finalCompositeBlob = backgroundRemovedBlob; // Default fallback
+  //     let compositeCreated = false;
+
+  //     try {
+  //       finalCompositeBlob = await createPolaroidComposite(backgroundRemovedBlob, POLAROID_FRAME_URL);
+  //       compositeCreated = true;
+  //       console.log("✅ Polaroid composite created successfully");
+  //     } catch (compositeError) {
+  //       console.warn("⚠️ Polaroid composite creation failed:", compositeError.message);
+  //       console.log("📸 Using background-removed image without frame...");
+  //     }
+
+  //     // 🐛 DEBUG: Also upload the PNG-only version for testing
+  //     if (backgroundRemoved) {
+  //       console.log("🐛 DEBUG: Uploading PNG-only version for comparison");
+  //       const debugFormData = new FormData();
+  //       debugFormData.append("photo", backgroundRemovedBlob, `${userData.phone}_debug_png_only_${newCounter}.png`);
+  //       debugFormData.append("phone", userData.phone);
+  //       debugFormData.append("source", "debug_png_only");
+  //       debugFormData.append("counter", newCounter);
+
+  //       try {
+  //         const debugResponse = await fetch("https://artmetech.co.in/api/upload-photo", {
+  //           method: "POST",
+  //           body: debugFormData,
+  //         });
+  //         const debugResult = await debugResponse.json();
+  //         if (debugResult.success) {
+  //           console.log("🐛 DEBUG: PNG-only uploaded at:", debugResult.data.imageUrl);
+  //         }
+  //       } catch (debugError) {
+  //         console.log("🐛 DEBUG: PNG-only upload failed:", debugError.message);
+  //       }
+  //     }
+
+  //     // STEP 3: Upload final composite image
+  //     setCompositeStatus('Uploading final image...');
+  //     setIsRemovingBg(false);
+  //     setIsCompositingImage(false);
+
+  //     const formData = new FormData();
+  //     formData.append(
+  //       "photo",
+  //       finalCompositeBlob,
+  //       `${userData.phone}_polaroid_composite_${newCounter}.png`
+  //     );
+  //     formData.append("phone", userData.phone);
+  //     formData.append("source", "snapchat_polaroid_composite");
+  //     formData.append("counter", newCounter);
+
+  //     const response = await fetch("https://artmetech.co.in/api/upload-photo", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     const result = await response.json();
+
+  //     if (result.success) {
+  //       console.log("✅ Final composite upload successful:", result.data.imageUrl);
+
+  //       localStorage.setItem("userPhoto", result.data.imageUrl);
+
+  //       const appliedGroupSize = userData?.groupSize || localStorage.getItem("selectedGroupSize") || "less";
+  //       const appliedLensId = appliedGroupSize === "less"
+  //         ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
+  //         : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+
+  //       setTimeout(() => {
+  //         setIsUploading(false);
+  //         setIsRemovingBg(false);
+  //         setCompositeStatus('');
+  //         setShowEndScreen(true);
+
+  //         onComplete({
+  //           ...userData,
+  //           photo: result.data.imageUrl,
+  //           timestamp: new Date().toISOString(),
+  //           lensId: appliedLensId,
+  //           groupSize: appliedGroupSize,
+  //           captureMode: "polaroid_composite",
+  //           uploadSuccess: true,
+  //           photoCounter: newCounter,
+  //           backgroundRemoved: backgroundRemoved,
+  //           polaroidComposite: compositeCreated,
+  //         });
+  //       }, 2000);
+  //     } else {
+  //       throw new Error(result.message || "Upload failed");
+  //     }
+
+  //   } catch (error) {
+  //     console.error("❌ Process failed:", error);
+
+  //     const revertedCounter = newCounter === "0" ? "1" : "0";
+  //     localStorage.setItem("photoCounter", revertedCounter);
+
+  //     setTimeout(() => {
+  //       setIsUploading(false);
+  //       setIsRemovingBg(false);
+  //       setIsCompositingImage(false);
+  //       setCompositeStatus('');
+  //       setShowEndScreen(true);
+
+  //       onComplete({
+  //         ...userData,
+  //         photo: "process-failed",
+  //         timestamp: new Date().toISOString(),
+  //         captureMode: "polaroid_composite_error",
+  //         uploadSuccess: false,
+  //         errorMessage: error.message,
+  //       });
+  //     }, 1000);
+  //   }
+  // };
+
+  const captureAndUpload = async () => {
+    console.log("📸 🚀 PROCEED CLICKED - Getting background-removed PNG...");
+    setIsUploading(true);
+    setIsRemovingBg(true);
+    setCompositeStatus('Capturing screenshot...');
+
+    // Update counter
     const currentCounter = localStorage.getItem("photoCounter") || "0";
     const newCounter = currentCounter === "0" ? "1" : "0";
-
-    console.log(`🔄 PROCEED: Counter UPDATE ${currentCounter} → ${newCounter}`);
     localStorage.setItem("photoCounter", newCounter);
-    console.log(`✅ PROCEED: Counter immediately updated to: ${newCounter}`);
 
-    // Try multiple ways to get the AR canvas
+    // Get canvas and create screenshot (your existing logic)
     let canvas = null;
-
-    // Method 1: Use canvasRef
     if (canvasRef.current) {
       canvas = canvasRef.current;
-    }
-
-    // Method 2: Get from canvas placeholder
-    if (!canvas && canvasPlaceholderRef.current) {
+    } else if (canvasPlaceholderRef.current) {
       canvas = canvasPlaceholderRef.current.querySelector("canvas");
-    }
-
-    // Method 3: Get from cache session
-    if (!canvas && window.snapARPreloadCache?.session?.output?.live) {
+    } else if (window.snapARPreloadCache?.session?.output?.live) {
       canvas = window.snapARPreloadCache.session.output.live;
-    }
-
-    // Method 4: Find any canvas with ID
-    if (!canvas) {
-      canvas =
-        document.getElementById("canvas") || document.querySelector("#canvas");
+    } else {
+      canvas = document.getElementById("canvas") || document.querySelector("#canvas");
     }
 
     if (!canvas || !userData?.phone || isCapturing) {
-      console.log("❌ Cannot capture:", {
-        hasCanvas: !!canvas,
-        canvasType: canvas?.tagName,
-        hasPhone: !!userData?.phone,
-        isCapturing: isCapturing,
-        containerRefType: containerRef.current?.tagName,
-        containerHasCanvas: !!containerRef.current?.querySelector("canvas"),
-      });
+      setIsUploading(false);
+      setIsRemovingBg(false);
+      setCompositeStatus('');
       return;
     }
 
     try {
       setIsCapturing(true);
       setAutoCapturing(true);
-      console.log("📸 Starting enhanced polaroid capture process...");
 
-      // 🎨 ENHANCE CANVAS ONE MORE TIME BEFORE CAPTURE
+      // Your existing screenshot capture logic
       enhanceCanvas(canvas);
-
-      // Wait a moment for canvas to be stable
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Get canvas dimensions
       const canvasWidth = canvas.width || canvas.clientWidth || 0;
       const canvasHeight = canvas.height || canvas.clientHeight || 0;
 
-      if (canvasWidth === 0 || canvasHeight === 0) {
-        throw new Error(
-          `Canvas has invalid dimensions: ${canvasWidth}x${canvasHeight}`
-        );
-      }
-
+      // Perfect capture area
       let polaroidArea;
-
       if (isTablet) {
-        // Condition 1: Tablet devices
-        polaroidArea = {
-          x: 13.3,
-          y: 4.5,
-          width: 74,
-          height: 78.2,
-        };
-        console.log("📱 Using TABLET polaroid area");
+        polaroidArea = { x: 18, y: 25, width: 65, height: 60 };
       } else if (isSohamDevice) {
-        // Condition 2: Soham's specific device (only applies if NOT tablet)
-        polaroidArea = {
-          x: 0,
-          y: 10,
-          width: 100,
-          height: 70,
-        };
-        console.log("📱 Using SOHAM DEVICE polaroid area");
+        polaroidArea = { x: 0, y: 10, width: 100, height: 70 };
       } else {
-        // Condition 3: All other devices (default)
-        polaroidArea = {
-          x: 2,
-          y: 10,
-          width: 96,
-          height: 72,
-        };
-        console.log("📱 Using DEFAULT polaroid area");
+        polaroidArea = { x: 18, y: 28, width: 65, height: 60 };
       }
 
       const captureArea = {
         x: Math.floor((canvasWidth * polaroidArea.x) / 100),
         y: Math.floor((canvasHeight * polaroidArea.y) / 100),
         width: Math.floor((canvasWidth * polaroidArea.width) / 100),
-        height: Math.floor((canvasHeight * polaroidArea.height) / 100),
+        height: Math.floor((canvasWidth * polaroidArea.height) / 100),
       };
 
+      // Create cropped screenshot
       const tempCanvas = document.createElement("canvas");
       const tempCtx = tempCanvas.getContext("2d");
-
-      // 🚀 ENHANCE TEMPORARY CANVAS TOO
       tempCtx.imageSmoothingEnabled = true;
       tempCtx.imageSmoothingQuality = "high";
 
       const enlargedWidth = Math.floor(captureArea.width * 1.3);
       const enlargedHeight = Math.floor(captureArea.height * 1.3);
-
       tempCanvas.width = enlargedWidth;
       tempCanvas.height = enlargedHeight;
 
-      // Draw the image
       tempCtx.drawImage(
         canvas,
-        captureArea.x,
-        captureArea.y,
-        captureArea.width,
-        captureArea.height,
-        0,
-        0,
-        enlargedWidth,
-        enlargedHeight
+        captureArea.x, captureArea.y, captureArea.width, captureArea.height,
+        0, 0, enlargedWidth, enlargedHeight
       );
 
-      // 🏆 CAPTURE WITH HIGHER QUALITY
-      const blob = await new Promise((resolve, reject) => {
-        tempCanvas.toBlob(
-          (result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(new Error("Failed to create blob from canvas"));
-            }
-          },
-          "image/png",
-          1.0
-        );
+      const croppedBlob = await new Promise((resolve, reject) => {
+        tempCanvas.toBlob((result) => {
+          if (result) resolve(result);
+          else reject(new Error("Failed to create cropped blob"));
+        }, "image/png", 1.0);
       });
 
-      if (blob.size === 0) {
-        throw new Error("Generated blob is empty");
+      console.log("✅ Cropped screenshot created");
+
+      // Remove background
+      setCompositeStatus('Removing background...');
+
+      let backgroundRemovedImageUrl = null;
+      let backgroundRemoved = false;
+
+      try {
+        const bgRemovalFormData = new FormData();
+        bgRemovalFormData.append("image", croppedBlob, `${userData.phone}_screenshot.png`);
+        bgRemovalFormData.append("phone", userData.phone);
+        bgRemovalFormData.append("counter", newCounter);
+
+        const bgRemovalResponse = await fetch("https://artmetech.co.in/api/remove-bg", {
+          method: "POST",
+          body: bgRemovalFormData,
+        });
+
+        if (bgRemovalResponse.ok) {
+          const bgRemovalResult = await bgRemovalResponse.json();
+          if (bgRemovalResult.success) {
+            backgroundRemovedImageUrl = bgRemovalResult.data.imageUrl;
+            backgroundRemoved = true;
+            console.log("✅ Background removal successful:", backgroundRemovedImageUrl);
+          }
+        }
+      } catch (bgError) {
+        console.warn("⚠️ Background removal failed, will use original");
       }
 
-      console.log("✅ Enhanced blob created successfully, size:", blob.size);
-
-      // 🔧 Use the counter that was already updated at the start
-      console.log(
-        `📸 PROCEED: Using updated counter for upload: ${newCounter}`
-      );
+      // Upload original screenshot as fallback
+      setCompositeStatus('Uploading images...');
+      setIsRemovingBg(false);
 
       const formData = new FormData();
-      formData.append(
-        "photo",
-        blob,
-        `${userData.phone}_snapchat_polaroid_${newCounter}.png`
-      );
+      formData.append("photo", croppedBlob, `${userData.phone}_screenshot_${newCounter}.png`);
       formData.append("phone", userData.phone);
-      formData.append("source", "snapchat_polaroid");
+      formData.append("source", "snapchat_screenshot");
       formData.append("counter", newCounter);
 
       const response = await fetch("https://artmetech.co.in/api/upload-photo", {
@@ -1365,115 +2111,76 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Upload failed: ${response.status}`);
       }
 
       const result = await response.json();
 
       if (result.success) {
-        console.log("✅ Enhanced upload successful:", result.data.imageUrl);
+        console.log("✅ Screenshot uploaded successfully");
 
-        // 🔧 IMPORTANT: Counter was already updated before upload
-        console.log(`✅ Photo saved with counter: ${newCounter}`);
-        console.log(`📷 Server returned URL: ${result.data.imageUrl}`);
+        // Store both URLs
+        localStorage.setItem("userPhoto", result.data.imageUrl);
+        if (backgroundRemovedImageUrl) {
+          localStorage.setItem("userPhotoBgRemoved", backgroundRemovedImageUrl);
+        }
 
-        // 🔧 CRITICAL: Update the stored URL to match the actual filename with counter
-        // The server returns the base URL, but we need to store the URL with the correct counter
-        const baseUrl = result.data.imageUrl.split("_").slice(0, -1).join("_"); // Remove old counter part
-        const updatedImageUrl = `${baseUrl}_${newCounter}.png`;
-
-        localStorage.setItem("userPhoto", updatedImageUrl);
-        console.log(`💾 Stored counter-based image URL: ${updatedImageUrl}`);
-
-        // Get the applied lens ID dynamically
-        const appliedGroupSize =
-          userData?.groupSize ||
-          localStorage.getItem("selectedGroupSize") ||
-          "less";
-        const appliedLensId =
-          appliedGroupSize === "less"
-            ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-            : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
-
-        setTimeout(() => {
-          setIsUploading(false);
-          setShowEndScreen(true);
-          onComplete({
-            ...userData,
-            photo: result.data.imageUrl,
-            timestamp: new Date().toISOString(),
-            lensId: appliedLensId,
-            groupSize: appliedGroupSize,
-            captureMode: "enhanced_polaroid",
-            uploadSuccess: true,
-            photoCounter: newCounter,
-          });
-        }, 2000);
-      } else {
-        // Handle upload failure - revert counter since upload failed
-        console.log("❌ PROCEED: Upload failed, reverting counter");
-        const revertedCounter = newCounter === "0" ? "1" : "0"; // Revert back
-        localStorage.setItem("photoCounter", revertedCounter);
-        console.log(`🔄 PROCEED: Counter reverted to: ${revertedCounter}`);
-
-        const appliedGroupSize =
-          userData?.groupSize ||
-          localStorage.getItem("selectedGroupSize") ||
-          "less";
-        const appliedLensId =
-          appliedGroupSize === "less"
-            ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-            : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
-
-        setTimeout(() => {
-          setIsUploading(false);
-          setShowEndScreen(true);
-          onComplete({
-            ...userData,
-            photo: "upload-failed",
-            timestamp: new Date().toISOString(),
-            lensId: appliedLensId,
-            groupSize: appliedGroupSize,
-            captureMode: "enhanced_polaroid",
-            uploadSuccess: false,
-            errorMessage: result.message,
-          });
-        }, 2400);
-      }
-    } catch (error) {
-      // Handle capture/upload error - revert counter since upload failed
-      console.log("❌ PROCEED: Capture/upload error, reverting counter");
-      const revertedCounter = newCounter === "0" ? "1" : "0"; // Revert back
-      localStorage.setItem("photoCounter", revertedCounter);
-      console.log(
-        `🔄 PROCEED: Counter reverted to: ${revertedCounter} due to error`
-      );
-
-      const appliedGroupSize =
-        userData?.groupSize ||
-        localStorage.getItem("selectedGroupSize") ||
-        "less";
-      const appliedLensId =
-        appliedGroupSize === "less"
+        const appliedGroupSize = userData?.groupSize || localStorage.getItem("selectedGroupSize") || "less";
+        const appliedLensId = appliedGroupSize === "less"
           ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
           : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
 
+        setTimeout(() => {
+          setIsUploading(false);
+          setIsRemovingBg(false);
+          setCompositeStatus('');
+          setShowEndScreen(true);
+
+          onComplete({
+            ...userData,
+            photo: result.data.imageUrl,
+            photoBgRemoved: backgroundRemovedImageUrl, // 🚨 NEW: Pass both URLs
+            timestamp: new Date().toISOString(),
+            lensId: appliedLensId,
+            groupSize: appliedGroupSize,
+            captureMode: "html_css_overlay",
+            uploadSuccess: true,
+            photoCounter: newCounter,
+            backgroundRemoved: backgroundRemoved,
+          });
+        }, 2000);
+      } else {
+        throw new Error("Upload failed");
+      }
+
+    } catch (error) {
+      console.error("❌ Process failed:", error);
+
+      // Error handling (same as before)
+      const revertedCounter = newCounter === "0" ? "1" : "0";
+      localStorage.setItem("photoCounter", revertedCounter);
+
       setTimeout(() => {
         setIsUploading(false);
+        setIsRemovingBg(false);
+        setCompositeStatus('');
         setShowEndScreen(true);
+
         onComplete({
           ...userData,
-          photo: "capture-failed",
+          photo: "process-failed",
           timestamp: new Date().toISOString(),
-          lensId: appliedLensId,
-          groupSize: appliedGroupSize,
-          captureMode: "enhanced_polaroid",
+          captureMode: "html_css_overlay_error",
           uploadSuccess: false,
           errorMessage: error.message,
         });
       }, 1000);
     }
   };
+
+
+
+
 
   if (error) {
     return (
@@ -1582,6 +2289,27 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
               </button>
             </div>
           )}
+
+
+
+
+          {
+            (autoCapturing || isUploading || isRemovingBg) && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-20">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-white mx-auto mb-4 drop-shadow-lg"></div>
+                  <div className="animate-pulse text-white text-xl font-bold drop-shadow-lg">
+                    {compositeStatus || "Processing your image..."}
+                  </div>
+                  {isRemovingBg && (
+                    <div className="text-white text-sm mt-2 opacity-80">
+                      🎨 Removing background...
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          }
         </div>
       </div>
     </ARErrorBoundary>

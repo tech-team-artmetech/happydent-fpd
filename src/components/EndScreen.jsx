@@ -11,6 +11,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   const [redirectTimer, setRedirectTimer] = useState(30);
   const [showRedirectTimer, setShowRedirectTimer] = useState(false);
 
+  // NEW: Add state for background-removed photo
+  const [backgroundRemovedPhoto, setBackgroundRemovedPhoto] = useState(null);
+
   // Store lens selection info
   const [lensInfo, setLensInfo] = useState({
     groupSize: null,
@@ -106,6 +109,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const currentCounter = localStorage.getItem("photoCounter") || "0";
       console.log("📷 Current photo counter:", currentCounter);
 
+      // NEW: Get background-removed photo URL
+      const backgroundRemovedUrl = localStorage.getItem("userPhotoBgRemoved");
+      if (backgroundRemovedUrl) {
+        setBackgroundRemovedPhoto(backgroundRemovedUrl);
+        console.log("🎨 Background-removed photo found:", backgroundRemovedUrl);
+      }
+
       // Check if we have a cached URL first
       const cachedImageUrl = localStorage.getItem("userPhoto");
 
@@ -153,9 +163,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setPhotoInfo(data.data);
         if (data.data.hasPhoto) {
           const currentCounter = localStorage.getItem("photoCounter") || "0";
-          const cacheBustedUrl = `${
-            data.data.imageUrl
-          }?counter=${currentCounter}&t=${Date.now()}`;
+          const cacheBustedUrl = `${data.data.imageUrl
+            }?counter=${currentCounter}&t=${Date.now()}`;
           console.log(
             "📷 API returned image, adding cache busting:",
             cacheBustedUrl
@@ -466,9 +475,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const printWindow = window.open("", "_blank");
 
       // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${
-        userInfo?.userName?.replace(/\s+/g, "_") || "user"
-      }`;
+      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, "_") || "user"
+        }`;
 
       // Write HTML content with the image
       printWindow.document.write(`
@@ -986,14 +994,106 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             </div>
           </div>
         ) : (
-          <img
-            src={userPhoto || "/assets/enddummy.png"}
-            alt="Result"
-            className="max-w-[550px]"
-            onError={(e) => {
-              e.target.src = "/assets/enddummy.png";
-            }}
-          />
+          /* NEW: Polaroid Composite Display */
+          <div className="relative" style={{ width: "400px", height: "550px" }}>
+            {/* Polaroid Frame Background */}
+            <img
+              src="/assets/enddummy.png"
+              alt="Polaroid Frame"
+              className="absolute inset-0 w-full h-full object-cover z-10"
+              style={{ width: "400px", height: "550px" }}
+            />
+
+            <img
+              src="public/assets/red-man.png"
+              alt="Chamking"
+              className="absolute z-30"
+              style={{
+                top: "93px",
+                width: "60px",
+                height: "60px",
+                objectFit: "contain",
+                scale: "5.5",
+                left: "107px",
+              }}
+            />
+
+            <img
+              src="public/assets/chamking-whatta.png"
+              alt="Chamking"
+              className="absolute z-30"
+              style={{
+                top: "44px",
+                right: "100px",
+                width: "60px",
+                height: "60px",
+                objectFit: "contain",
+                scale: "4.5",
+              }}
+            />
+
+            {/* Background-Removed Photo (positioned in the blue area) */}
+            {backgroundRemovedPhoto && (
+              <img
+                src={backgroundRemovedPhoto}
+                alt="Your AR Photo"
+                className="absolute z-20"
+                style={{
+                  top: "133px",
+                  left: "38px",
+                  width: "339px",
+                  height: "290px",
+                  objectFit: "cover",
+                  borderRadius: "4px",
+                  scale: "1.23",
+                }}
+                onError={(e) => {
+                  console.log("Background-removed photo failed to load, hiding");
+                  setBackgroundRemovedPhoto(null);
+                }}
+              />
+            )}
+
+            {/* Fallback: Original photo if background removal failed */}
+            {!backgroundRemovedPhoto && userPhoto && (
+              <img
+                src={userPhoto}
+                alt="Your AR Photo"
+                className="absolute z-20"
+                style={{
+                  top: "133px",
+                  left: "38px",
+                  width: "339px",
+                  height: "290px",
+                  objectFit: "cover",
+                  borderRadius: "4px",
+                  scale: "1.23",
+                }}
+                onError={(e) => {
+                  console.log("Original photo failed to load");
+                  e.target.style.display = 'none';
+                }}
+              />
+            )}
+
+            {/* Double Fallback: Show just the frame if no photos */}
+            {!backgroundRemovedPhoto && !userPhoto && (
+              <div
+                className="absolute z-20 flex items-center justify-center text-gray-400 text-sm"
+                style={{
+                  top: "133px",
+                  left: "38px",
+                  width: "339px",
+                  height: "290px",
+                  objectFit: "cover",
+                  borderRadius: "4px",
+                  scale: "1.23",
+                }}
+              >
+                Photo not available
+              </div>
+            )}
+          </div>
         )}
       </div>
 
