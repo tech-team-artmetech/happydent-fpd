@@ -38,12 +38,12 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
   useEffect(() => {
     // UNCOMMENT THE LINE BELOW TO ENABLE THE REDIRECT TIMER
-    // if (showQR) {
-    //   setShowRedirectTimer(true);
-    //   setRedirectTimer(30); // Reset timer when QR is shown
-    // } else {
-    //   setShowRedirectTimer(false);
-    // }
+    if (showQR) {
+      setShowRedirectTimer(true);
+      setRedirectTimer(30); // Reset timer when QR is shown
+    } else {
+      setShowRedirectTimer(false);
+    }
 
     if (!showRedirectTimer || !showQR) return;
 
@@ -153,8 +153,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setPhotoInfo(data.data);
         if (data.data.hasPhoto) {
           const currentCounter = localStorage.getItem("photoCounter") || "0";
-          const cacheBustedUrl = `${data.data.imageUrl
-            }?counter=${currentCounter}&t=${Date.now()}`;
+          const cacheBustedUrl = `${
+            data.data.imageUrl
+          }?counter=${currentCounter}&t=${Date.now()}`;
           console.log(
             "📷 API returned image, adding cache busting:",
             cacheBustedUrl
@@ -330,7 +331,17 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       alert("Please connect a WiFi printer");
     }
   };
+  // const [capturedPhoto, setCapturedPhoto] = useState(null);
+  // const photoDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+  // setCapturedPhoto(photoDataUrl);
+  // const downloadPhoto = () => {
+  //   if (!capturedPhoto) return;
 
+  //   const link = document.createElement("a");
+  //   link.download = `capture_${Date.now()}.jpg`;
+  //   link.href = capturedPhoto;
+  //   link.click();
+  // };
   // Bluetooth printer communication
   const sendToBluetooth = async (device, photoUrl) => {
     try {
@@ -455,8 +466,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const printWindow = window.open("", "_blank");
 
       // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, "_") || "user"
-        }`;
+      const fileName = `whatta-chamking-smile-${
+        userInfo?.userName?.replace(/\s+/g, "_") || "user"
+      }`;
 
       // Write HTML content with the image
       printWindow.document.write(`
@@ -1011,7 +1023,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         {showQR && (
           <button
             onClick={handleNormalPrint}
-            className="text-white text-sm font-bold cursor-pointer py-3 flex-1 flex items-center justify-center gap-1 text-white text-xl font-bold cursor-pointer py-3 w-80"
+            className="text-white font-gotham text-sm font-bold cursor-pointer py-3 flex-1 flex items-center justify-center gap-1 text-xl font-bold cursor-pointer py-3 w-80"
             style={{
               background:
                 "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
@@ -1048,8 +1060,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           <div className="flex gap-4 w-80">
             {/* Bluetooth Print Button */}
             <button
-              onClick={handleBluetoothPrint}
-              className="text-white text-lg font-bold cursor-pointer py-3 flex-1 flex items-center justify-center gap-2"
+              onClick={downloadPhoto}
+              className="text-white font-gotham text-xl font-bold cursor-pointer py-3 w-80"
               style={{
                 background:
                   "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
@@ -1062,70 +1074,17 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 opacity: "100%",
               }}
             >
-              {/* Bluetooth Icon */}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {/* Vertical stem */}
-                <line x1="12" y1="2" x2="12" y2="22" />
-                {/* Upper chevron */}
-                <polyline points="12 2 18 8 12 14" />
-                {/* Lower chevron */}
-                <polyline points="12 14 18 20 12 22" />
-                {/* Mirror chevron on left */}
-                <polyline points="12 2 6 8 12 14" />
-                <polyline points="12 14 6 20 12 22" />
-              </svg>
-              PRINT
+              Download Photo
             </button>
+
             {/* WiFi Print Button */}
-            <button
-              onClick={handleWiFiPrint}
-              className="text-white text-lg font-bold cursor-pointer py-3 flex-1 flex items-center justify-center gap-2"
-              style={{
-                background:
-                  "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
-                borderRadius: "4px",
-                border: "1px solid rgba(255, 255, 255, 0.52)",
-                borderStyle: "inside",
-                boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.39)",
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-                opacity: "100%",
-              }}
-            >
-              {/* WiFi Icon */}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M1.42 9a16 16 0 0 1 21.16 0" />
-                <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-                <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
-                <line x1="12" y1="20" x2="12.01" y2="20" />
-              </svg>
-              PRINT
-            </button>
           </div>
         )}
 
         {/* Smart Retry Button */}
         <button
           onClick={handleRetry}
-          className="text-white text-xl font-bold cursor-pointer py-3 w-80"
+          className="text-white font-gotham text-xl font-bold cursor-pointer py-3 w-80"
           style={{
             background:
               "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
@@ -1148,7 +1107,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               setShowQR(false);
               setQrCodeUrl("");
             }}
-            className="text-white text-lg font-medium cursor-pointer py-2 px-4 flex items-center gap-2"
+            className="text-white text-lg font-gotham font-medium cursor-pointer py-2 px-4 flex items-center gap-2"
             style={{
               background: "transparent",
             }}
@@ -1168,16 +1127,16 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             BACK
           </button>
         )}
-      </div>
-      {showQR && showRedirectTimer && redirectTimer > 0 && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30">
-          <div className="text-white px-4 py-2 rounded-lg border border-white/20 backdrop-blur-sm">
-            <p className="text-sm font-medium">
-              Redirecting in {redirectTimer}...
-            </p>
+        {showQR && showRedirectTimer && redirectTimer > 0 && (
+          <div className="  z-30">
+            <div className="text-white px-4 py-2 rounded-lg border border-white/20 backdrop-blur-sm">
+              <p className="text-sm font-medium">
+                Redirecting in {redirectTimer}...
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

@@ -1523,7 +1523,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           <div ref={canvasPlaceholderRef} className="absolute inset-0"></div>
 
           {/* Red Demon Detection Debug UI */}
-          {process.env.NODE_ENV === "development" &&
+          {/* {process.env.NODE_ENV === "development" &&
             redDemonDetection.isScanning && (
               <div className="absolute top-4 left-4 bg-red-900/80 text-white text-xs p-3 rounded z-40 max-w-xs">
                 <div className="font-bold mb-2">🔴 Red Demon Scanner</div>
@@ -1539,7 +1539,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
                   Scanning top 25% for red demon
                 </div>
               </div>
-            )}
+            )} */}
 
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
