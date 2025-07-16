@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useRef } from "react";
+import html2canvas from 'html2canvas';
 const EndScreen = ({ onRetry, onRetryAR }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [photoInfo, setPhotoInfo] = useState(null);
@@ -19,6 +19,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     groupSize: null,
     lensId: null,
   });
+
+  const polaroidDivRef = useRef(null);
+
 
   const API_BASE_URL = "";
 
@@ -243,22 +246,242 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   };
 
   // Handle Download button click - show QR code
+  // const handleDownload = async () => {
+  //   if (!photoInfo?.hasPhoto) {
+  //     setError("No photo available to download.");
+  //     return;
+  //   }
+
+  //   try {
+  //     // Generate QR code with the photo URL
+  //     const photoUrl = userPhoto || photoInfo.imageUrl;
+  //     const qrUrl = await generateQRCode(photoUrl);
+  //     setQrCodeUrl(qrUrl);
+  //     setShowQR(true);
+  //     console.log("🔗 QR Code generated for URL:", photoUrl);
+  //   } catch (error) {
+  //     console.error("QR generation error:", error);
+  //     setError("Failed to generate QR code. Please try again.");
+  //   }
+  // };
+
   const handleDownload = async () => {
     if (!photoInfo?.hasPhoto) {
       setError("No photo available to download.");
       return;
     }
 
+    setIsLoading(true);
+    setError("");
+
+    // Wait 3 seconds for images to load
+    console.log("⏳ Waiting 3 seconds for all images to load...");
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     try {
-      // Generate QR code with the photo URL
-      const photoUrl = userPhoto || photoInfo.imageUrl;
-      const qrUrl = await generateQRCode(photoUrl);
-      setQrCodeUrl(qrUrl);
-      setShowQR(true);
-      console.log("🔗 QR Code generated for URL:", photoUrl);
+      const currentCounter = localStorage.getItem("photoCounter") || "0";
+      const phone = userInfo?.phone;
+
+      if (!phone) {
+        throw new Error("User phone not found");
+      }
+
+      console.log("🎨 Creating polaroid manually on canvas (200 IQ method)...");
+
+      // Create canvas manually with exact dimensions
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 400;
+      canvas.height = 550;
+
+      // Fill with white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 400, 550);
+
+      console.log("✅ Canvas created: 400x550");
+
+      // Helper function to load images
+      const loadImage = (src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            console.log(`✅ Loaded image: ${src}`);
+            resolve(img);
+          };
+          img.onerror = (error) => {
+            console.warn(`⚠️ Failed to load: ${src}`, error);
+            resolve(null); // Don't reject, just return null
+          };
+          img.src = src;
+        });
+      };
+
+      // Load all images in parallel
+      console.log("📥 Loading all images...");
+      const [frameImg, redManImg, whattaImg, userImg] = await Promise.all([
+        loadImage('/assets/enddummy.png'),
+        loadImage('/assets/red-man.png'),
+        loadImage('/assets/chamking-whatta.png'),
+        loadImage(backgroundRemovedPhoto || userPhoto || '')
+      ]);
+
+      console.log("✅ All images loaded, drawing on canvas...");
+
+      // Draw frame background (z-index 10)
+      if (frameImg) {
+        ctx.drawImage(frameImg, 0, 0, 400, 550);
+        console.log("✅ Frame drawn");
+      }
+
+      // Draw user photo (z-index 20) - positioned exactly like in CSS
+      if (userImg) {
+        // CSS: top: "133px", left: "38px", width: "339px", height: "290px", scale: "1.23"
+        // The scale transforms around center, so we need to account for that
+        const originalX = 38;
+        const originalY = 149;
+        const originalW = 339;
+        const originalH = 290;
+        const scale = 1.32;
+
+        // Calculate final scaled dimensions
+        const scaledW = originalW * scale; // 339 * 1.23 = 417px
+        const scaledH = originalH * scale; // 290 * 1.23 = 357px
+
+        // Scale transforms from center, so adjust position
+        const finalX = originalX - (scaledW - originalW) / 2; // Approximately 38 - 39 = -1
+        const finalY = originalY - (scaledH - originalH) / 2; // Approximately 133 - 33.5 = 99.5
+
+        ctx.drawImage(userImg, finalX, finalY, scaledW, scaledH);
+        console.log("✅ User photo drawn with exact CSS scale positioning");
+      }
+
+      // Draw red man (z-index 30) - positioned exactly like in CSS - OVERLAPPING user photo
+      if (redManImg) {
+        // CSS: top: "93px", left: "107px", width: "60px", height: "60px", scale: "5.5"
+        const originalX = 107;
+        const originalY = 92;
+        const originalWidth = 60;
+        const originalHeight = 60;
+
+        // Independent scaling
+        const scaleX = 3.8;
+        const scaleY = 5.4; // ← adjust this as needed to stretch vertically
+
+        const scaledWidth = originalWidth * scaleX;
+        const scaledHeight = originalHeight * scaleY;
+
+        // Adjust position to scale from center
+        const finalX = originalX - (scaledWidth - originalWidth) / 2;
+        const finalY = originalY - (scaledHeight - originalHeight) / 2;
+
+        // Draw with independent width and height
+        ctx.drawImage(redManImg, finalX, finalY, scaledWidth, scaledHeight);
+
+        console.log("✅ Red man drawn with independent scaleX/scaleY", {
+          x: finalX,
+          y: finalY,
+          width: scaledWidth,
+          height: scaledHeight,
+        });
+      }
+
+      // Draw whatta text (z-index 30) - positioned exactly like in CSS  
+      if (whattaImg) {
+        // CSS: top: "44px", right: "100px", width: "60px", height: "60px", scale: "4.5"
+        const originalY = 44;
+        const rightMargin = 100;
+        const originalWidth = 60;
+        const originalHeight = 60;
+        const scaleX = 4.3; // keep X scale as-is
+        const scaleY = 2.5; // stretch more in Y direction
+
+        const scaledWidth = originalWidth * scaleX;
+        const scaledHeight = originalHeight * scaleY;
+
+        // Calculate X from right
+        const originalX = 400 - rightMargin - originalWidth;
+
+        // Since scaling is from center, adjust position
+        const finalX = originalX - (scaledWidth - originalWidth) / 2;
+        const finalY = originalY - (scaledHeight - originalHeight) / 2;
+
+        // Draw image with independent scaling
+        ctx.drawImage(whattaImg, finalX, finalY, scaledWidth, scaledHeight);
+
+        console.log("✅ Whatta text drawn with X:Y stretch", {
+          x: finalX,
+          y: finalY,
+          width: scaledWidth,
+          height: scaledHeight,
+        });
+      }
+
+      console.log("🎨 Polaroid manually created on canvas!");
+
+      // Convert to blob
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob((result) => {
+          if (result) resolve(result);
+          else reject(new Error("Failed to create blob"));
+        }, "image/png", 1.0);
+      });
+
+      console.log("✅ Canvas converted to blob, size:", blob.size);
+
+      // Upload to S3
+      console.log("🚀 Uploading manually created polaroid to S3...");
+      const formData = new FormData();
+      formData.append("photo", blob, `${phone}_polaroid_manual_${currentCounter}.png`);
+      formData.append("phone", phone);
+      formData.append("source", "manual_polaroid_creation");
+      formData.append("counter", currentCounter);
+
+      console.log("📤 FormData created:", {
+        filename: `${phone}_polaroid_manual_${currentCounter}.png`,
+        phone: phone,
+        source: "manual_polaroid_creation",
+        counter: currentCounter,
+        blobSize: blob.size
+      });
+
+      const response = await fetch("https://artmetech.co.in/api/upload-photo", {
+        method: "POST",
+        body: formData,
+      });
+
+      console.log("📡 Response status:", response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Upload failed:", response.status, errorText);
+        throw new Error(`Upload failed: ${response.status} - ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log("📊 Upload response:", result);
+
+      if (result.success) {
+        console.log("✅ Manual polaroid uploaded successfully:", result.data.imageUrl);
+
+        // Store new URL
+        localStorage.setItem("userPhoto", result.data.imageUrl);
+        console.log("💾 Stored new URL:", result.data.imageUrl);
+
+        // Generate QR
+        const qrUrl = await generateQRCode(result.data.imageUrl);
+        setQrCodeUrl(qrUrl);
+        setShowQR(true);
+        console.log("✅ QR generated and shown");
+      } else {
+        throw new Error(result.message || "Upload failed");
+      }
+
     } catch (error) {
-      console.error("QR generation error:", error);
-      setError("Failed to generate QR code. Please try again.");
+      console.error("❌ Error:", error);
+      setError("Failed to create polaroid. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -995,7 +1218,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           </div>
         ) : (
           /* NEW: Polaroid Composite Display */
-          <div className="relative" style={{ width: "400px", height: "550px" }}>
+          <div ref={polaroidDivRef} className="relative" style={{ width: "400px", height: "550px" }}>
             {/* Polaroid Frame Background */}
             <img
               src="/assets/enddummy.png"
@@ -1005,7 +1228,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             />
 
             <img
-              src="public/assets/red-man.png"
+              src="/assets/red-man.png"
               alt="Chamking"
               className="absolute z-30"
               style={{
@@ -1019,7 +1242,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             />
 
             <img
-              src="public/assets/chamking-whatta.png"
+              src="/assets/chamking-whatta.png"
               alt="Chamking"
               className="absolute z-30"
               style={{
@@ -1039,13 +1262,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 alt="Your AR Photo"
                 className="absolute z-20"
                 style={{
-                  top: "133px",
+                  top: "143px",
                   left: "38px",
                   width: "339px",
                   height: "290px",
                   objectFit: "cover",
                   borderRadius: "4px",
-                  scale: "1.23",
+                  scale: "1.3"
                 }}
                 onError={(e) => {
                   console.log("Background-removed photo failed to load, hiding");
@@ -1061,13 +1284,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 alt="Your AR Photo"
                 className="absolute z-20"
                 style={{
-                  top: "133px",
+                  top: "143px",
                   left: "38px",
                   width: "339px",
                   height: "290px",
                   objectFit: "cover",
                   borderRadius: "4px",
-                  scale: "1.23",
+                  scale: "1.3"
                 }}
                 onError={(e) => {
                   console.log("Original photo failed to load");
@@ -1081,13 +1304,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               <div
                 className="absolute z-20 flex items-center justify-center text-gray-400 text-sm"
                 style={{
-                  top: "133px",
+                  top: "143px",
                   left: "38px",
                   width: "339px",
                   height: "290px",
                   objectFit: "cover",
                   borderRadius: "4px",
-                  scale: "1.23",
+                  scale: "1.3"
                 }}
               >
                 Photo not available

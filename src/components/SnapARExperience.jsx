@@ -2301,11 +2301,6 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
                   <div className="animate-pulse text-white text-xl font-bold drop-shadow-lg">
                     {compositeStatus || "Processing your image..."}
                   </div>
-                  {isRemovingBg && (
-                    <div className="text-white text-sm mt-2 opacity-80">
-                      🎨 Removing background...
-                    </div>
-                  )}
                 </div>
               </div>
             )
