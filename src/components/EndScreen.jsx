@@ -1238,14 +1238,14 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           <div
             ref={polaroidDivRef}
             className="relative"
-            style={{ width: "400px", height: "550px" }}
+            style={{ width: "440px", height: "550px" }}
           >
             {/* Polaroid Frame Background */}
             <img
               src="/assets/enddummy.png"
               alt="Polaroid Frame"
               className="absolute inset-0 w-full h-full object-cover z-10"
-              style={{ width: "400px", height: "550px" }}
+              // style={{ width: "400px", height: "550px" }}
             />
 
             <img
@@ -1253,12 +1253,18 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               alt="Chamking"
               className="absolute z-30"
               style={{
-                top: "93px",
+                // top: "93px",
+                // width: "60px",
+                // height: "60px",
+                // objectFit: "contain",
+                // scale: "5.5",
+                // left: "107px",
+                top: "95px",
                 width: "60px",
                 height: "60px",
                 objectFit: "contain",
                 scale: "5.5",
-                left: "107px",
+                left: "122px",
               }}
             />
 
@@ -1285,14 +1291,16 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 style={{
                   // top: "143px",
                   // left: "38px",
-                  left: "60px",
-                  width: "339px",
+                  left: "67px",
+                  // left: "60px",
+                  width: "307px",
+                  // width: "339px",
                   height: "290px",
                   // objectFit: "cover",
                   objectFit: "contain",
-                  borderRadius: "4px",
-                  scale: "1.3",
-                  bottom: "110px",
+                  // borderRadius: "4px",
+                  scale: "1.35",
+                  bottom: "127px",
                 }}
                 onError={(e) => {
                   console.log(
@@ -1310,6 +1318,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 alt="Your AR Photo"
                 className="absolute z-20"
                 style={{
+                  // top: "130px",
                   top: "143px",
                   left: "38px",
                   width: "339px",
