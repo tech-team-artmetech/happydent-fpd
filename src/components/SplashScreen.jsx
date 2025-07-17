@@ -93,9 +93,7 @@ const SplashScreen = ({ onComplete }) => {
 
     // Clear any existing session data
     localStorage.removeItem("snapARSessionId");
-    localStorage.removeItem("userPhone");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
+    localStorage.removeItem("selectedGroupSize");
 
     // Initialize fresh cache
     window.snapARPreloadCache = {
@@ -382,28 +380,6 @@ const SplashScreen = ({ onComplete }) => {
 
       <img className="chamking-smile-logo" src={chamkingSmile} alt="" />
 
-      {/* Loading text below logo - ALWAYS in DOM, just visibility controlled */}
-      {/* <div
-        className={`font-gotham font-light font-[18px] italic mb-2 transition-opacity duration-300 ${showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
-          }`}
-        style={{
-          visibility: showLoadingContent && imagesLoaded ? "visible" : "hidden",
-        }}
-      >
-        Loading...
-      </div> */}
-
-      {/* Session Status Indicator */}
-      {/* {sessionState.created && (
-        <div className="w-full max-w-sm mb-4">
-          <div className="bg-green-500/20 border border-green-500/50 rounded p-2 text-center">
-            <p className="text-green-300 text-xs">
-              🆔 Session Created: {sessionState.sessionId?.substring(0, 20)}...
-            </p>
-          </div>
-        </div>
-      )} */}
-
       {/* Error Message */}
       {sessionState.error && (
         <div className="w-full max-w-sm mb-4">
@@ -429,25 +405,9 @@ const SplashScreen = ({ onComplete }) => {
         </div>
 
         {/* Initial loading message - ALWAYS in DOM */}
-        {/* <p
-          className={`text-center text-xl font-bold transition-opacity duration-300 ${showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
-            }`}
-          style={{
-            visibility:
-              showLoadingContent && imagesLoaded ? "visible" : "hidden",
-          }}
-        >
-          {Math.round(loadingProgress)}%
-        </p> */}
         <p
-          className={`text-center text-xl font-bold transition-all duration-300 ${
-            showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          // style={{
-          //   transform:
-          //     showLoadingContent && imagesLoaded ? "scale(1)" : "scale(0)",
-          //   transformOrigin: "center",
-          // }}
+          className={`text-center text-xl font-bold transition-all duration-300 ${showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
+            }`}
         >
           {Math.round(loadingProgress)}%
         </p>
@@ -458,9 +418,8 @@ const SplashScreen = ({ onComplete }) => {
         <button
           onClick={handleTapToBegin}
           disabled={sessionState.isCreating}
-          className={`text-white text-[18px] ctaBtn font-gotham font-medium italic transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
-            showFinalContent ? "opacity-100" : "opacity-0"
-          }`}
+          className={`text-white text-[18px] ctaBtn font-gotham font-medium italic transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${showFinalContent ? "opacity-100" : "opacity-0"
+            }`}
           style={{
             visibility: showFinalContent ? "visible" : "hidden",
             background:

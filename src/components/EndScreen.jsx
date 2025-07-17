@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
-const EndScreen = ({ onRetry, onRetryAR }) => {
-  const [userInfo, setUserInfo] = useState(null);
+
+const EndScreen = ({ onRetry, onRetryAR, userData }) => {
+  const [sessionInfo, setSessionInfo] = useState(null);
   const [photoInfo, setPhotoInfo] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,20 +89,18 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   };
 
   useEffect(() => {
-    // Get user info from localStorage
-    const phone = localStorage.getItem("userPhone");
-    const userId = localStorage.getItem("userId");
-    const userName = localStorage.getItem("userName");
+    // 🚨 UPDATED: Get session info instead of user info
+    const sessionId = userData?.sessionId || localStorage.getItem("snapARSessionId");
 
     // Get lens selection info
-    const selectedGroupSize = localStorage.getItem("selectedGroupSize");
+    const selectedGroupSize = userData?.groupSize || localStorage.getItem("selectedGroupSize");
     const selectedLensId =
       selectedGroupSize === "less"
         ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
         : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
-    if (phone && userId && userName) {
-      setUserInfo({ phone, userId, userName });
+    if (sessionId) {
+      setSessionInfo({ sessionId });
       setLensInfo({
         groupSize: selectedGroupSize || "less",
         lensId: selectedLensId,
@@ -131,7 +130,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           "📷 No cached URL, constructing expected URL with counter:",
           currentCounter
         );
-        const expectedImageUrl = `https://artmetech.co.in/api/uploads/enhanced_polaroid_${phone}_${currentCounter}.png?t=${Date.now()}`;
+        // 🚨 UPDATED: Use sessionId instead of phone for URL construction
+        const expectedImageUrl = `https://artmetech.co.in/api/uploads/enhanced_polaroid_${sessionId}_${currentCounter}.png?t=${Date.now()}`;
         console.log("📷 Expected image URL:", expectedImageUrl);
 
         const img = new Image();
@@ -143,21 +143,21 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         };
         img.onerror = () => {
           console.log("❌ Expected image failed, trying API fallback...");
-          fetchUserPhoto(phone);
+          fetchSessionPhoto(sessionId);
         };
         img.src = expectedImageUrl;
       }
     }
-  }, []);
+  }, [userData]);
 
-  // Fetch user photo from server
-  const fetchUserPhoto = async (phone) => {
+  // 🚨 UPDATED: Fetch session photo instead of user photo
+  const fetchSessionPhoto = async (sessionId) => {
     try {
       setIsLoading(true);
-      console.log("📷 Fetching photo from API for phone:", phone);
+      console.log("📷 Fetching photo from API for sessionId:", sessionId);
 
       const response = await fetch(
-        `https://artmetech.co.in/api/user/${phone}/photo`
+        `https://artmetech.co.in/api/session/${sessionId}/photo`
       );
       const data = await response.json();
 
@@ -165,9 +165,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setPhotoInfo(data.data);
         if (data.data.hasPhoto) {
           const currentCounter = localStorage.getItem("photoCounter") || "0";
-          const cacheBustedUrl = `${
-            data.data.imageUrl
-          }?counter=${currentCounter}&t=${Date.now()}`;
+          const cacheBustedUrl = `${data.data.imageUrl
+            }?counter=${currentCounter}&t=${Date.now()}`;
           console.log(
             "📷 API returned image, adding cache busting:",
             cacheBustedUrl
@@ -183,10 +182,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     }
   };
 
-  // Download photo function
+  // 🚨 UPDATED: Download photo function using sessionId
   const downloadPhoto = async () => {
-    if (!userInfo?.phone) {
-      setError("User information not found. Please register again.");
+    if (!sessionInfo?.sessionId) {
+      setError("Session information not found. Please restart the experience.");
       return;
     }
 
@@ -199,10 +198,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     setError("");
 
     try {
-      console.log(`📥 Downloading photo for ${userInfo.phone}`);
+      console.log(`📥 Downloading photo for session: ${sessionInfo.sessionId}`);
 
       const response = await fetch(
-        `https://artmetech.co.in/api/download-photo/${userInfo.phone}`,
+        `https://artmetech.co.in/api/download-photo-session/${sessionInfo.sessionId}`,
         {
           method: "GET",
         }
@@ -221,11 +220,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const link = document.createElement("a");
       link.href = url;
 
-      // Set filename
-      const fileName = `${userInfo.userName.replace(
-        /\s+/g,
-        "_"
-      )}_happydent_photo.jpg`;
+      // Set filename using sessionId
+      const fileName = `${sessionInfo.sessionId}_happydent_photo.jpg`;
       link.download = fileName;
 
       // Trigger download
@@ -245,26 +241,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     }
   };
 
-  // Handle Download button click - show QR code
-  // const handleDownload = async () => {
-  //   if (!photoInfo?.hasPhoto) {
-  //     setError("No photo available to download.");
-  //     return;
-  //   }
-
-  //   try {
-  //     // Generate QR code with the photo URL
-  //     const photoUrl = userPhoto || photoInfo.imageUrl;
-  //     const qrUrl = await generateQRCode(photoUrl);
-  //     setQrCodeUrl(qrUrl);
-  //     setShowQR(true);
-  //     console.log("🔗 QR Code generated for URL:", photoUrl);
-  //   } catch (error) {
-  //     console.error("QR generation error:", error);
-  //     setError("Failed to generate QR code. Please try again.");
-  //   }
-  // };
-
+  // 🚨 UPDATED: Handle download using sessionId
   const handleDownload = async () => {
     if (!photoInfo?.hasPhoto) {
       setError("No photo available to download.");
@@ -280,10 +257,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
     try {
       const currentCounter = localStorage.getItem("photoCounter") || "0";
-      const phone = userInfo?.phone;
+      const sessionId = sessionInfo?.sessionId;
 
-      if (!phone) {
-        throw new Error("User phone not found");
+      if (!sessionId) {
+        throw new Error("Session ID not found");
       }
 
       console.log("🎨 Creating polaroid manually on canvas (200 IQ method)...");
@@ -336,85 +313,60 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       // Draw user photo (z-index 20) - positioned exactly like in CSS
       if (userImg) {
-        // CSS: top: "133px", left: "38px", width: "339px", height: "290px", scale: "1.23"
-        // The scale transforms around center, so we need to account for that
         const originalX = 38;
         const originalY = 149;
         const originalW = 339;
         const originalH = 290;
         const scale = 1.32;
 
-        // Calculate final scaled dimensions
-        const scaledW = originalW * scale; // 339 * 1.23 = 417px
-        const scaledH = originalH * scale; // 290 * 1.23 = 357px
+        const scaledW = originalW * scale;
+        const scaledH = originalH * scale;
 
-        // Scale transforms from center, so adjust position
-        const finalX = originalX - (scaledW - originalW) / 2; // Approximately 38 - 39 = -1
-        const finalY = originalY - (scaledH - originalH) / 2; // Approximately 133 - 33.5 = 99.5
+        const finalX = originalX - (scaledW - originalW) / 2;
+        const finalY = originalY - (scaledH - originalH) / 2;
 
         ctx.drawImage(userImg, finalX, finalY, scaledW, scaledH);
         console.log("✅ User photo drawn with exact CSS scale positioning");
       }
 
-      // Draw red man (z-index 30) - positioned exactly like in CSS - OVERLAPPING user photo
+      // Draw red man (z-index 30)
       if (redManImg) {
-        // CSS: top: "93px", left: "107px", width: "60px", height: "60px", scale: "5.5"
         const originalX = 107;
         const originalY = 92;
         const originalWidth = 60;
         const originalHeight = 60;
 
-        // Independent scaling
         const scaleX = 3.8;
-        const scaleY = 5.4; // ← adjust this as needed to stretch vertically
+        const scaleY = 5.4;
 
         const scaledWidth = originalWidth * scaleX;
         const scaledHeight = originalHeight * scaleY;
 
-        // Adjust position to scale from center
         const finalX = originalX - (scaledWidth - originalWidth) / 2;
         const finalY = originalY - (scaledHeight - originalHeight) / 2;
 
-        // Draw with independent width and height
         ctx.drawImage(redManImg, finalX, finalY, scaledWidth, scaledHeight);
-
-        console.log("✅ Red man drawn with independent scaleX/scaleY", {
-          x: finalX,
-          y: finalY,
-          width: scaledWidth,
-          height: scaledHeight,
-        });
+        console.log("✅ Red man drawn with independent scaleX/scaleY");
       }
 
-      // Draw whatta text (z-index 30) - positioned exactly like in CSS
+      // Draw whatta text (z-index 30)
       if (whattaImg) {
-        // CSS: top: "44px", right: "100px", width: "60px", height: "60px", scale: "4.5"
         const originalY = 44;
         const rightMargin = 100;
         const originalWidth = 60;
         const originalHeight = 60;
-        const scaleX = 4.3; // keep X scale as-is
-        const scaleY = 2.5; // stretch more in Y direction
+        const scaleX = 4.3;
+        const scaleY = 2.5;
 
         const scaledWidth = originalWidth * scaleX;
         const scaledHeight = originalHeight * scaleY;
 
-        // Calculate X from right
         const originalX = 400 - rightMargin - originalWidth;
-
-        // Since scaling is from center, adjust position
         const finalX = originalX - (scaledWidth - originalWidth) / 2;
         const finalY = originalY - (scaledHeight - originalHeight) / 2;
 
-        // Draw image with independent scaling
         ctx.drawImage(whattaImg, finalX, finalY, scaledWidth, scaledHeight);
-
-        console.log("✅ Whatta text drawn with X:Y stretch", {
-          x: finalX,
-          y: finalY,
-          width: scaledWidth,
-          height: scaledHeight,
-        });
+        console.log("✅ Whatta text drawn with X:Y stretch");
       }
 
       console.log("🎨 Polaroid manually created on canvas!");
@@ -433,27 +385,28 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       console.log("✅ Canvas converted to blob, size:", blob.size);
 
-      // Upload to S3
+      // 🚨 UPDATED: Upload to S3 using new endpoint
       console.log("🚀 Uploading manually created polaroid to S3...");
       const formData = new FormData();
       formData.append(
         "photo",
         blob,
-        `${phone}_polaroid_manual_${currentCounter}.png`
+        `${sessionId}_polaroid_manual_${currentCounter}.png`
       );
-      formData.append("phone", phone);
+      formData.append("sessionId", sessionId);
       formData.append("source", "manual_polaroid_creation");
       formData.append("counter", currentCounter);
 
       console.log("📤 FormData created:", {
-        filename: `${phone}_polaroid_manual_${currentCounter}.png`,
-        phone: phone,
+        filename: `${sessionId}_polaroid_manual_${currentCounter}.png`,
+        sessionId: sessionId,
         source: "manual_polaroid_creation",
         counter: currentCounter,
         blobSize: blob.size,
       });
 
-      const response = await fetch("https://artmetech.co.in/api/upload-photo", {
+      // 🚨 UPDATED: Use new API endpoint
+      const response = await fetch("https://artmetech.co.in/api/upload-photo-id", {
         method: "POST",
         body: formData,
       });
@@ -573,17 +526,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       alert("Please connect a WiFi printer");
     }
   };
-  // const [capturedPhoto, setCapturedPhoto] = useState(null);
-  // const photoDataUrl = canvas.toDataURL("image/jpeg", 0.9);
-  // setCapturedPhoto(photoDataUrl);
-  // const downloadPhoto = () => {
-  //   if (!capturedPhoto) return;
 
-  //   const link = document.createElement("a");
-  //   link.download = `capture_${Date.now()}.jpg`;
-  //   link.href = capturedPhoto;
-  //   link.click();
-  // };
   // Bluetooth printer communication
   const sendToBluetooth = async (device, photoUrl) => {
     try {
@@ -713,101 +656,100 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       // Create a new window/tab for printing
       const printWindow = window.open("", "_blank");
 
-      // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${
-        userInfo?.userName?.replace(/\s+/g, "_") || "user"
-      }`;
+      // Create the filename with session ID
+      const fileName = `whatta-chamking-smile-${sessionInfo?.sessionId?.substring(0, 8) || "session"
+        }`;
 
       // Write HTML content with the S3 image
       printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>${fileName}</title>
-        <style>
-          @page {
-            size: 4in 6in;
-            margin: 0;
-            orientation: portrait;
-          }
-          
-          body {
-            margin: 0;
-            padding: 0;
-            width: 4in;
-            height: 6in;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: white;
-            overflow: hidden;
-          }
-          
-          img {
-            max-width: 4in;
-            max-height: 6in;
-            object-fit: contain;
-            display: block;
-          }
-          
-          @media print {
-            @page {
-              size: 4in 6in !important;
-              margin: 0 !important;
-              orientation: portrait !important;
-            }
-            
-            html, body { 
-              width: 4in !important;
-              height: 6in !important;
-              margin: 0 !important; 
-              padding: 0 !important;
-              background: white !important;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              overflow: hidden !important;
-              page-break-after: avoid !important;
-            }
-            
-            img { 
-              max-width: 4in !important; 
-              max-height: 6in !important;
-              width: auto !important;
-              height: auto !important;
-              object-fit: contain !important;
-              page-break-inside: avoid !important;
-              page-break-before: avoid !important;
-              page-break-after: avoid !important;
-              display: block !important;
-              /* Enhanced print quality */
-              filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
-              image-rendering: -webkit-optimize-contrast !important;
-              image-rendering: crisp-edges !important;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
-            
-            /* Force single page */
-            * {
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              page-break-inside: avoid !important;
-              orphans: 1 !important;
-              widows: 1 !important;
-            }
-            
-            /* Hide everything that might cause page breaks */
-            body > *:not(img) {
-              display: none !important;
-            }
-          }
-        </style>
-      </head>
-      <body>
-        <img src="${photoUrl}" alt="S3 Photo to print" onload="window.print(); window.close();" />
-      </body>
-    </html>
-  `);
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${fileName}</title>
+            <style>
+              @page {
+                size: 4in 6in;
+                margin: 0;
+                orientation: portrait;
+              }
+              
+              body {
+                margin: 0;
+                padding: 0;
+                width: 4in;
+                height: 6in;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: white;
+                overflow: hidden;
+              }
+              
+              img {
+                max-width: 4in;
+                max-height: 6in;
+                object-fit: contain;
+                display: block;
+              }
+              
+              @media print {
+                @page {
+                  size: 4in 6in !important;
+                  margin: 0 !important;
+                  orientation: portrait !important;
+                }
+                
+                html, body { 
+                  width: 4in !important;
+                  height: 6in !important;
+                  margin: 0 !important; 
+                  padding: 0 !important;
+                  background: white !important;
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                  overflow: hidden !important;
+                  page-break-after: avoid !important;
+                }
+                
+                img { 
+                  max-width: 4in !important; 
+                  max-height: 6in !important;
+                  width: auto !important;
+                  height: auto !important;
+                  object-fit: contain !important;
+                  page-break-inside: avoid !important;
+                  page-break-before: avoid !important;
+                  page-break-after: avoid !important;
+                  display: block !important;
+                  /* Enhanced print quality */
+                  filter: contrast(1.15) brightness(1.02) saturate(1.1) !important;
+                  image-rendering: -webkit-optimize-contrast !important;
+                  image-rendering: crisp-edges !important;
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                }
+                
+                /* Force single page */
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                  page-break-inside: avoid !important;
+                  orphans: 1 !important;
+                  widows: 1 !important;
+                }
+                
+                /* Hide everything that might cause page breaks */
+                body > *:not(img) {
+                  display: none !important;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${photoUrl}" alt="S3 Photo to print" onload="window.print(); window.close();" />
+          </body>
+        </html>
+      `);
 
       printWindow.document.close();
     } catch (error) {
@@ -916,155 +858,41 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     return new Uint8Array(await imageBlob.arrayBuffer());
   };
 
-  // Smart retry function with lens info
+  // 🚨 UPDATED: Smart retry function using sessionId
   const handleSmartRetry = async () => {
     console.log("🔄 Smart retry initiated");
 
     try {
-      const phone = userInfo?.phone;
-      if (!phone) {
-        throw new Error("User phone not found. Please start over.");
+      const sessionId = sessionInfo?.sessionId;
+      if (!sessionId) {
+        throw new Error("Session ID not found. Please start over.");
       }
 
-      console.log(`📱 Checking existing session for phone: ${phone}`);
+      console.log(`🆔 Using session ID for retry: ${sessionId}`);
 
-      // Step 1: Check if there's an existing session for this phone
-      const sessionCheckResponse = await fetch(
-        `https://artmetech.co.in/api/snap/check-session/${phone}`,
+      // Step 1: Reset the session to ended: false
+      const resetResponse = await fetch(
+        "https://artmetech.co.in/api/snap/reset-session",
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            sessionId: sessionId,
+          }),
         }
       );
 
-      const sessionCheckData = await sessionCheckResponse.json();
-      console.log("📊 Session check result:", sessionCheckData);
+      const resetData = await resetResponse.json();
 
-      let sessionId = null;
-      let isNewSession = false;
-
-      if (sessionCheckResponse.ok && sessionCheckData.success) {
-        if (
-          sessionCheckData.data.hasExistingSession &&
-          sessionCheckData.data.session.canReuse
-        ) {
-          // Existing session found and can be reused
-          sessionId = sessionCheckData.data.session.sessionId;
-          console.log(`♻️ Found existing reusable session: ${sessionId}`);
-
-          // Step 2a: Reset the existing session to ended: false
-          const resetResponse = await fetch(
-            "https://artmetech.co.in/api/snap/reset-session",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                sessionId: sessionId,
-                phone: phone,
-              }),
-            }
-          );
-
-          const resetData = await resetResponse.json();
-
-          if (!resetResponse.ok || !resetData.success) {
-            throw new Error(resetData.message || "Failed to reset session");
-          }
-
-          console.log(`✅ Session reset successfully:`, resetData.data);
-        } else {
-          // No existing session or not reusable - create new one
-          console.log(`🆕 No reusable session found, creating new session`);
-          isNewSession = true;
-        }
-      } else {
-        console.log(`🆕 Session check failed, creating new session`);
-        isNewSession = true;
+      if (!resetResponse.ok || !resetData.success) {
+        throw new Error(resetData.message || "Failed to reset session");
       }
 
-      // Step 2b: Create new session if needed
-      if (isNewSession) {
-        const createSessionResponse = await fetch(
-          "https://artmetech.co.in/api/snap/create-session",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              phone: phone,
-              forceNew: true, // Force new session
-            }),
-          }
-        );
+      console.log(`✅ Session reset successfully:`, resetData.data);
 
-        const createSessionData = await createSessionResponse.json();
-
-        if (!createSessionResponse.ok || !createSessionData.success) {
-          throw new Error(
-            createSessionData.message || "Failed to create new session"
-          );
-        }
-
-        sessionId = createSessionData.data.sessionId;
-        console.log(`✅ New session created: ${sessionId}`);
-
-        // Step 3: Associate phone with the new session
-        const associateResponse = await fetch(
-          "https://artmetech.co.in/api/snap/associate-phone",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              sessionId: sessionId,
-              phone: phone,
-              userInfo: {
-                userId: userInfo.userId,
-                userName: userInfo.userName,
-                phone: phone,
-              },
-            }),
-          }
-        );
-
-        const associateData = await associateResponse.json();
-
-        if (!associateResponse.ok || !associateData.success) {
-          throw new Error(
-            associateData.message || "Failed to associate phone with session"
-          );
-        }
-
-        console.log(`✅ Phone associated with session:`, associateData.data);
-      }
-
-      // Step 4: Reset the phone-based AR state to ended: false
-      const arEndResponse = await fetch("https://artmetech.co.in/api/ar-end", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phone: phone,
-          ended: false, // Reset to ongoing
-        }),
-      });
-
-      const arEndData = await arEndResponse.json();
-
-      if (!arEndResponse.ok || !arEndData.success) {
-        console.warn("⚠️ Failed to reset AR end state:", arEndData.message);
-      } else {
-        console.log(`✅ AR state reset to ongoing:`, arEndData.data);
-      }
-
-      // Step 5: Update local storage with session info
+      // Step 2: Update local storage with session info
       localStorage.setItem("currentSessionId", sessionId);
       localStorage.setItem("snapARSessionId", sessionId);
       localStorage.setItem("arSessionReady", "true");
@@ -1074,7 +902,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         localStorage.setItem("selectedGroupSize", lensInfo.groupSize);
       }
 
-      // Step 6: Check if we can reuse AR session from cache
+      // Step 3: Check if we can reuse AR session from cache
       const cache = window.snapARPreloadCache;
       const hasValidARSession = cache?.sessionReady && cache?.session;
 
@@ -1110,27 +938,24 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         hasValidARSession = false;
       }
 
-      // Step 7: Execute the appropriate retry action
+      // Step 4: Execute the appropriate retry action
       if (hasValidARSession && onRetryAR) {
         // AR session is available - go directly to AR experience
         console.log("🎮 Launching AR experience with session:", sessionId);
 
         onRetryAR({
           sessionId: sessionId,
-          phone: userInfo.phone,
-          userId: userInfo.userId,
-          userName: userInfo.userName,
           groupSize: lensInfo.groupSize,
+          termsAccepted: true, // Already accepted from splash
           isRetry: true,
         });
       } else {
         // No AR session in cache - do full restart but keep session info
         console.log("🔄 Doing full restart with session:", sessionId);
 
-        // Keep session info but clear other data for fresh registration flow
-        localStorage.removeItem("userPhone");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("userName");
+        // Clear other data for fresh flow
+        localStorage.removeItem("userPhoto");
+        localStorage.removeItem("userPhotoBgRemoved");
 
         if (onRetry) {
           onRetry({
@@ -1161,14 +986,14 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     handleSmartRetry();
   };
 
-  // Debug function with lens info
+  // Debug function with session info
   const handleDebug = async () => {
-    const phone = userInfo?.phone;
-    const sessionId = localStorage.getItem("currentSessionId");
+    const sessionId = sessionInfo?.sessionId;
+    const storedSessionId = localStorage.getItem("currentSessionId");
 
     console.log("🔍 Debug Session State:");
-    console.log("Phone:", phone);
-    console.log("Stored Session ID:", sessionId);
+    console.log("Session ID:", sessionId);
+    console.log("Stored Session ID:", storedSessionId);
     console.log("Lens Info:", lensInfo);
     console.log(
       "Selected Group Size:",
@@ -1177,18 +1002,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     console.log("AR Cache:", window.snapARPreloadCache);
     console.log("Show QR:", showQR);
     console.log("QR URL:", qrCodeUrl);
-
-    if (phone) {
-      try {
-        const arStatus = await fetch(
-          `https://artmetech.co.in/api/snap/ar-status/${phone}`
-        );
-        const arData = await arStatus.json();
-        console.log("Phone AR Status:", arData);
-      } catch (e) {
-        console.log("Could not fetch phone AR status");
-      }
-    }
 
     if (sessionId) {
       try {
@@ -1245,7 +1058,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               src="/assets/enddummy.png"
               alt="Polaroid Frame"
               className="absolute inset-0 w-full h-full object-cover z-10"
-              // style={{ width: "400px", height: "550px" }}
             />
 
             <img
@@ -1253,12 +1065,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               alt="Chamking"
               className="absolute z-30"
               style={{
-                // top: "93px",
-                // width: "60px",
-                // height: "60px",
-                // objectFit: "contain",
-                // scale: "5.5",
-                // left: "107px",
                 top: "95px",
                 width: "60px",
                 height: "60px",
@@ -1289,16 +1095,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 alt="Your AR Photo"
                 className="absolute z-20"
                 style={{
-                  // top: "143px",
-                  // left: "38px",
                   left: "67px",
-                  // left: "60px",
                   width: "307px",
-                  // width: "339px",
                   height: "290px",
-                  // objectFit: "cover",
                   objectFit: "contain",
-                  // borderRadius: "4px",
                   scale: "1.35",
                   bottom: "127px",
                 }}
@@ -1318,7 +1118,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 alt="Your AR Photo"
                 className="absolute z-20"
                 style={{
-                  // top: "130px",
                   top: "143px",
                   left: "38px",
                   width: "339px",
@@ -1361,7 +1160,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         {!showQR && (
           <button
             onClick={handleDownload}
-            className="text-white text-xl font-bold cursor-pointer py-3 w-80"
+            disabled={isLoading}
+            className="text-white text-xl font-bold cursor-pointer py-3 w-80 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background:
                 "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
@@ -1374,7 +1174,14 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
               opacity: "100%",
             }}
           >
-            {photoInfo?.hasPhoto ? "PROCEED TO PRINT" : "DOWNLOAD"}
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                PROCESSING...
+              </div>
+            ) : (
+              (photoInfo?.hasPhoto ? "PROCEED TO PRINT" : "DOWNLOAD")
+            )}
           </button>
         )}
 
@@ -1416,10 +1223,11 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         {/* Print Buttons Row - Only show when QR is displayed */}
         {showQR && (
           <div className="flex gap-4 w-80">
-            {/* Bluetooth Print Button */}
+            {/* Download Button */}
             <button
               onClick={downloadPhoto}
-              className="text-white font-gotham text-xl font-bold cursor-pointer py-3 w-80"
+              disabled={isLoading}
+              className="text-white font-gotham text-xl font-bold cursor-pointer py-3 w-80 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background:
                   "radial-gradient(40% 40% at 80% 100%, rgb(255 255 255 / 31%) 0%, rgb(0 51 255 / 31%) 59%, rgb(0 13 255 / 31%) 100%)",
@@ -1432,10 +1240,15 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 opacity: "100%",
               }}
             >
-              Download Photo
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  DOWNLOADING...
+                </div>
+              ) : (
+                "Download Photo"
+              )}
             </button>
-
-            {/* WiFi Print Button */}
           </div>
         )}
 
@@ -1485,8 +1298,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
             BACK
           </button>
         )}
+
+        {/* Redirect Timer */}
         {showQR && showRedirectTimer && redirectTimer > 0 && (
-          <div className="  z-30">
+          <div className="z-30">
             <div className="text-white px-4 py-2 rounded-lg border border-white/20 backdrop-blur-sm">
               <p className="text-sm font-medium">
                 Redirecting in {redirectTimer}...

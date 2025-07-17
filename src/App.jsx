@@ -4,7 +4,7 @@ import RegistrationScreen from "./components/RegistrationScreen";
 import SnapARExperience from "./components/SnapARExperience";
 import EndScreen from "./components/EndScreen";
 import Terms from "./components/terms";
-import LandscapeBlocker from "./components/LandscapeBlocker"; // 🆕 Add this import
+import LandscapeBlocker from "./components/LandscapeBlocker";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("splash");
@@ -21,7 +21,7 @@ function App() {
   // 🚨 NEW: Error clearing function
   const clearError = () => setError("");
 
-  // 🚨 ENHANCED: Navigation functions with error clearing
+  // 🚨 UPDATED: Navigation functions for proper flow
   const goToRegister = (sessionData) => {
     clearError();
     setCurrentScreen("register");
@@ -159,15 +159,17 @@ function App() {
           localStorage.clear();
           console.log("✅ Complete localStorage cleared");
         } else if (retryData?.preserveSession) {
-          localStorage.removeItem("userPhone");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("userName");
+          // Clear user data but keep session
+          localStorage.removeItem("userPhoto");
+          localStorage.removeItem("userPhotoBgRemoved");
           console.log("✅ User data cleared, session preserved");
         } else {
-          localStorage.removeItem("userPhone");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("userName");
-          console.log("✅ User data cleared");
+          // Clear AR-related data
+          localStorage.removeItem("snapARSessionId");
+          localStorage.removeItem("selectedGroupSize");
+          localStorage.removeItem("userPhoto");
+          localStorage.removeItem("userPhotoBgRemoved");
+          console.log("✅ AR data cleared");
         }
 
         // Add additional delay before navigation
@@ -301,11 +303,9 @@ function App() {
 
           // Set user data with restart flag
           setUserData({
-            name: retryUserData.userName,
-            phone: retryUserData.phone,
-            userId: retryUserData.userId,
             sessionId: retryUserData.sessionId,
             groupSize: selectedGroupSize,
+            termsAccepted: true, // Already accepted from registration
             isRetry: true,
             needsCompleteRestart: true,
           });
