@@ -555,8 +555,8 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
           groupSize: formData.groupSize,
           lensId:
             formData.groupSize === "less"
-              ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-              : "f60131ce-4f77-46b6-ac1a-3d5c839c4035",
+              ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+              : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf",
         },
       });
     } catch (error) {
@@ -685,17 +685,18 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
                   isLoading ||
                   (otpData.isOtpSent && !otpData.canResend && !BYPASS_OTP)
                 }
-                className={`min-w-[120px] fixed-btn px-4 py-3 rounded font-medium text-sm transition-all ${validatePhone(formData.phone) &&
+                className={`min-w-[120px] fixed-btn px-4 py-3 rounded font-medium text-sm transition-all ${
+                  validatePhone(formData.phone) &&
                   !isLoading &&
                   (!otpData.isOtpSent || otpData.canResend || BYPASS_OTP)
-                  ? "text-white hover:opacity-80 border-white"
-                  : "bg-gray-500/30 text-gray-400 border-white/40 cursor-not-allowed"
-                  }`}
+                    ? "text-white hover:opacity-80 border-white"
+                    : "bg-gray-500/30 text-gray-400 border-white/40 cursor-not-allowed"
+                }`}
                 style={{
                   backgroundColor:
                     validatePhone(formData.phone) &&
-                      !isLoading &&
-                      (!otpData.isOtpSent || otpData.canResend || BYPASS_OTP)
+                    !isLoading &&
+                    (!otpData.isOtpSent || otpData.canResend || BYPASS_OTP)
                       ? "#041763"
                       : undefined,
                 }}
@@ -703,19 +704,20 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
                 {BYPASS_OTP
                   ? "Verify"
                   : otpData.isOtpSent && !otpData.canResend
-                    ? "Sent"
-                    : otpData.isOtpSent
-                      ? "Resend"
-                      : "Send OTP"}
+                  ? "Sent"
+                  : otpData.isOtpSent
+                  ? "Resend"
+                  : "Send OTP"}
               </button>
             )}
           </div>
 
           <p
-            className={`text-red-300 text-xs mt-1 transition-all duration-200 ${phoneTouched && !validatePhone(formData.phone)
-              ? "visible"
-              : "invisible"
-              }`}
+            className={`text-red-300 text-xs mt-1 transition-all duration-200 ${
+              phoneTouched && !validatePhone(formData.phone)
+                ? "visible"
+                : "invisible"
+            }`}
           >
             Enter valid 10 digit mobile number
           </p>
@@ -744,10 +746,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
               <button
                 onClick={handleVerifyOTP}
                 disabled={!validateOTP(otpData.otp) || isLoading}
-                className={`min-w-[120px] fixed-btn px-4 py-3 rounded font-medium text-sm transition-all ${validateOTP(otpData.otp) && !isLoading
-                  ? "text-white hover:opacity-80 border-white"
-                  : "bg-gray-500/30 text-gray-400 border-white/40 cursor-not-allowed"
-                  }`}
+                className={`min-w-[120px] fixed-btn px-4 py-3 rounded font-medium text-sm transition-all ${
+                  validateOTP(otpData.otp) && !isLoading
+                    ? "text-white hover:opacity-80 border-white"
+                    : "bg-gray-500/30 text-gray-400 border-white/40 cursor-not-allowed"
+                }`}
                 style={{
                   backgroundColor:
                     validateOTP(otpData.otp) && !isLoading
@@ -768,10 +771,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
 
             {/* OTP Validation Error */}
             <p
-              className={`text-red-300 text-xs mt-1 transition-all duration-200 ${otpTouched && !validateOTP(otpData.otp)
-                ? "visible"
-                : "invisible"
-                }`}
+              className={`text-red-300 text-xs mt-1 transition-all duration-200 ${
+                otpTouched && !validateOTP(otpData.otp)
+                  ? "visible"
+                  : "invisible"
+              }`}
             >
               Enter valid 6-digit OTP
             </p>
@@ -794,10 +798,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
             <div className="relative flex border-2 border-white rounded-[4px] overflow-hidden bg-transparent mt-[24px]">
               {/* Sliding white background */}
               <div
-                className={`absolute top-0 h-full w-1/2 bg-white transition-transform duration-300 ease-in-out ${formData.groupSize === "more"
-                  ? "translate-x-full"
-                  : "translate-x-0"
-                  }`}
+                className={`absolute top-0 h-full w-1/2 bg-white transition-transform duration-300 ease-in-out ${
+                  formData.groupSize === "more"
+                    ? "translate-x-full"
+                    : "translate-x-0"
+                }`}
                 style={{
                   margin: "0px",
                   width: "50%",
@@ -811,10 +816,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
                 <button
                   onClick={() => handleGroupSizeSelect("less")}
                   disabled={isLoading}
-                  className={`outline-none hover:outline-none flex-1 py-[14px] px-6 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative z-10 font-semibold text-[14px] rounded-[4px] select-none focus:outline-none focus:ring-0 ${formData.groupSize === "less"
-                    ? "bg-transparent text-blue-700" // Selected: transparent bg (white shows from behind), blue text
-                    : "bg-transparent text-white" // Not selected: transparent bg, white text
-                    }`}
+                  className={`outline-none hover:outline-none flex-1 py-[14px] px-6 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative z-10 font-semibold text-[14px] rounded-[4px] select-none focus:outline-none focus:ring-0 ${
+                    formData.groupSize === "less"
+                      ? "bg-transparent text-blue-700" // Selected: transparent bg (white shows from behind), blue text
+                      : "bg-transparent text-white" // Not selected: transparent bg, white text
+                  }`}
                   style={{
                     WebkitTapHighlightColor: "transparent",
                     WebkitUserSelect: "none",
@@ -829,10 +835,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
                 <button
                   onClick={() => handleGroupSizeSelect("more")}
                   disabled={isLoading}
-                  className={`outline-none hover:outline-none flex-1 py-[14px] px-6 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative z-10 font-semibold text-[14px] rounded-[4px] select-none focus:outline-none focus:ring-0 ${formData.groupSize === "more"
-                    ? "bg-transparent text-blue-700" // Selected: transparent bg (white shows from behind), blue text
-                    : "bg-transparent text-white" // Not selected: transparent bg, white text
-                    }`}
+                  className={`outline-none hover:outline-none flex-1 py-[14px] px-6 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative z-10 font-semibold text-[14px] rounded-[4px] select-none focus:outline-none focus:ring-0 ${
+                    formData.groupSize === "more"
+                      ? "bg-transparent text-blue-700" // Selected: transparent bg (white shows from behind), blue text
+                      : "bg-transparent text-white" // Not selected: transparent bg, white text
+                  }`}
                   style={{
                     WebkitTapHighlightColor: "transparent",
                     WebkitUserSelect: "none",
@@ -858,10 +865,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
           {/* Custom Checkbox */}
           <div className="flex-shrink-0 mt-0.5">
             <div
-              className={`w-5 h-5 rounded border-2 transition-all duration-200 flex items-center justify-center ${termsAccepted
-                ? "border-white bg-white"
-                : "border-white/50 bg-transparent hover:border-white"
-                }`}
+              className={`w-5 h-5 rounded border-2 transition-all duration-200 flex items-center justify-center ${
+                termsAccepted
+                  ? "border-white bg-white"
+                  : "border-white/50 bg-transparent hover:border-white"
+              }`}
             >
               {termsAccepted && (
                 <svg
@@ -910,10 +918,11 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
         <button
           onClick={handleGetStarted}
           disabled={!isFormValid() || isLoading}
-          className={`w-full py-4 px-6 rounded font-bold text-lg transition-all relative ${isFormValid() && !isLoading
-            ? "cursor-pointer hover:opacity-90"
-            : "cursor-not-allowed opacity-60"
-            }`}
+          className={`w-full py-4 px-6 rounded font-bold text-lg transition-all relative ${
+            isFormValid() && !isLoading
+              ? "cursor-pointer hover:opacity-90"
+              : "cursor-not-allowed opacity-60"
+          }`}
           style={{
             background:
               isFormValid() && !isLoading
@@ -942,8 +951,9 @@ const RegistrationScreen = ({ onComplete, onTerms, sessionData }) => {
             </div>
           ) : (
             <span
-              className={`italic ${isFormValid() && !isLoading ? "text-white" : "text-gray-300"
-                }`}
+              className={`italic ${
+                isFormValid() && !isLoading ? "text-white" : "text-gray-300"
+              }`}
             >
               GET STARTED
             </span>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 const EndScreen = ({ onRetry, onRetryAR }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [photoInfo, setPhotoInfo] = useState(null);
@@ -21,7 +21,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
   });
 
   const polaroidDivRef = useRef(null);
-
 
   const API_BASE_URL = "";
 
@@ -98,8 +97,8 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
     const selectedGroupSize = localStorage.getItem("selectedGroupSize");
     const selectedLensId =
       selectedGroupSize === "less"
-        ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-        : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+        ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+        : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
     if (phone && userId && userName) {
       setUserInfo({ phone, userId, userName });
@@ -166,8 +165,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         setPhotoInfo(data.data);
         if (data.data.hasPhoto) {
           const currentCounter = localStorage.getItem("photoCounter") || "0";
-          const cacheBustedUrl = `${data.data.imageUrl
-            }?counter=${currentCounter}&t=${Date.now()}`;
+          const cacheBustedUrl = `${
+            data.data.imageUrl
+          }?counter=${currentCounter}&t=${Date.now()}`;
           console.log(
             "📷 API returned image, adding cache busting:",
             cacheBustedUrl
@@ -276,7 +276,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
     // Wait 3 seconds for images to load
     console.log("⏳ Waiting 3 seconds for all images to load...");
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     try {
       const currentCounter = localStorage.getItem("photoCounter") || "0";
@@ -289,13 +289,13 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       console.log("🎨 Creating polaroid manually on canvas (200 IQ method)...");
 
       // Create canvas manually with exact dimensions
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
       canvas.width = 400;
       canvas.height = 550;
 
       // Fill with white background
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, 400, 550);
 
       console.log("✅ Canvas created: 400x550");
@@ -304,7 +304,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const loadImage = (src) => {
         return new Promise((resolve, reject) => {
           const img = new Image();
-          img.crossOrigin = 'anonymous';
+          img.crossOrigin = "anonymous";
           img.onload = () => {
             console.log(`✅ Loaded image: ${src}`);
             resolve(img);
@@ -320,10 +320,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       // Load all images in parallel
       console.log("📥 Loading all images...");
       const [frameImg, redManImg, whattaImg, userImg] = await Promise.all([
-        loadImage('/assets/enddummy.png'),
-        loadImage('/assets/red-man.png'),
-        loadImage('/assets/chamking-whatta.png'),
-        loadImage(backgroundRemovedPhoto || userPhoto || '')
+        loadImage("/assets/enddummy.png"),
+        loadImage("/assets/red-man.png"),
+        loadImage("/assets/chamking-whatta.png"),
+        loadImage(backgroundRemovedPhoto || userPhoto || ""),
       ]);
 
       console.log("✅ All images loaded, drawing on canvas...");
@@ -386,7 +386,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         });
       }
 
-      // Draw whatta text (z-index 30) - positioned exactly like in CSS  
+      // Draw whatta text (z-index 30) - positioned exactly like in CSS
       if (whattaImg) {
         // CSS: top: "44px", right: "100px", width: "60px", height: "60px", scale: "4.5"
         const originalY = 44;
@@ -421,10 +421,14 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
 
       // Convert to blob
       const blob = await new Promise((resolve, reject) => {
-        canvas.toBlob((result) => {
-          if (result) resolve(result);
-          else reject(new Error("Failed to create blob"));
-        }, "image/png", 1.0);
+        canvas.toBlob(
+          (result) => {
+            if (result) resolve(result);
+            else reject(new Error("Failed to create blob"));
+          },
+          "image/png",
+          1.0
+        );
       });
 
       console.log("✅ Canvas converted to blob, size:", blob.size);
@@ -432,7 +436,11 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       // Upload to S3
       console.log("🚀 Uploading manually created polaroid to S3...");
       const formData = new FormData();
-      formData.append("photo", blob, `${phone}_polaroid_manual_${currentCounter}.png`);
+      formData.append(
+        "photo",
+        blob,
+        `${phone}_polaroid_manual_${currentCounter}.png`
+      );
       formData.append("phone", phone);
       formData.append("source", "manual_polaroid_creation");
       formData.append("counter", currentCounter);
@@ -442,7 +450,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
         phone: phone,
         source: "manual_polaroid_creation",
         counter: currentCounter,
-        blobSize: blob.size
+        blobSize: blob.size,
       });
 
       const response = await fetch("https://artmetech.co.in/api/upload-photo", {
@@ -462,7 +470,10 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       console.log("📊 Upload response:", result);
 
       if (result.success) {
-        console.log("✅ Manual polaroid uploaded successfully:", result.data.imageUrl);
+        console.log(
+          "✅ Manual polaroid uploaded successfully:",
+          result.data.imageUrl
+        );
 
         // Store new URL
         localStorage.setItem("userPhoto", result.data.imageUrl);
@@ -476,7 +487,6 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       } else {
         throw new Error(result.message || "Upload failed");
       }
-
     } catch (error) {
       console.error("❌ Error:", error);
       setError("Failed to create polaroid. Please try again.");
@@ -704,7 +714,9 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
       const printWindow = window.open("", "_blank");
 
       // Create the filename with user's name
-      const fileName = `whatta-chamking-smile-${userInfo?.userName?.replace(/\s+/g, "_") || "user"}`;
+      const fileName = `whatta-chamking-smile-${
+        userInfo?.userName?.replace(/\s+/g, "_") || "user"
+      }`;
 
       // Write HTML content with the S3 image
       printWindow.document.write(`
@@ -1223,7 +1235,11 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
           </div>
         ) : (
           /* NEW: Polaroid Composite Display */
-          <div ref={polaroidDivRef} className="relative" style={{ width: "400px", height: "550px" }}>
+          <div
+            ref={polaroidDivRef}
+            className="relative"
+            style={{ width: "400px", height: "550px" }}
+          >
             {/* Polaroid Frame Background */}
             <img
               src="/assets/enddummy.png"
@@ -1267,16 +1283,21 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                 alt="Your AR Photo"
                 className="absolute z-20"
                 style={{
-                  top: "143px",
-                  left: "38px",
+                  // top: "143px",
+                  // left: "38px",
+                  left: "60px",
                   width: "339px",
                   height: "290px",
-                  objectFit: "cover",
+                  // objectFit: "cover",
+                  objectFit: "contain",
                   borderRadius: "4px",
-                  scale: "1.3"
+                  scale: "1.3",
+                  bottom: "110px",
                 }}
                 onError={(e) => {
-                  console.log("Background-removed photo failed to load, hiding");
+                  console.log(
+                    "Background-removed photo failed to load, hiding"
+                  );
                   setBackgroundRemovedPhoto(null);
                 }}
               />
@@ -1295,11 +1316,11 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                   height: "290px",
                   objectFit: "cover",
                   borderRadius: "4px",
-                  scale: "1.3"
+                  scale: "1.3",
                 }}
                 onError={(e) => {
                   console.log("Original photo failed to load");
-                  e.target.style.display = 'none';
+                  e.target.style.display = "none";
                 }}
               />
             )}
@@ -1315,7 +1336,7 @@ const EndScreen = ({ onRetry, onRetryAR }) => {
                   height: "290px",
                   objectFit: "cover",
                   borderRadius: "4px",
-                  scale: "1.3"
+                  scale: "1.3",
                 }}
               >
                 Photo not available

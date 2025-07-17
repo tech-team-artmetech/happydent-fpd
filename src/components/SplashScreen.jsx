@@ -274,8 +274,8 @@ const SplashScreen = ({ onComplete }) => {
       // 🔥 STEP 3: Load lens assets (ALL API calls happen here)
       if (!cache.lenses) {
         const actualLensGroupId = "b2aafdd8-cb11-4817-9df9-835b36d9d5a7";
-        const lessLensId = "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"; // Less than 3 people
-        const moreLensId = "f60131ce-4f77-46b6-ac1a-3d5c839c4035"; // More than 3 people
+        const lessLensId = "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"; // Less than 3 people
+        const moreLensId = "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf"; // More than 3 people
 
         // Load both lenses
         console.log("🔥 Loading both lenses...");
@@ -440,13 +440,14 @@ const SplashScreen = ({ onComplete }) => {
           {Math.round(loadingProgress)}%
         </p> */}
         <p
-          className={`text-center text-xl font-bold transition-all duration-300 ${showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
-            }`}
-        // style={{
-        //   transform:
-        //     showLoadingContent && imagesLoaded ? "scale(1)" : "scale(0)",
-        //   transformOrigin: "center",
-        // }}
+          className={`text-center text-xl font-bold transition-all duration-300 ${
+            showLoadingContent && imagesLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          // style={{
+          //   transform:
+          //     showLoadingContent && imagesLoaded ? "scale(1)" : "scale(0)",
+          //   transformOrigin: "center",
+          // }}
         >
           {Math.round(loadingProgress)}%
         </p>
@@ -457,8 +458,9 @@ const SplashScreen = ({ onComplete }) => {
         <button
           onClick={handleTapToBegin}
           disabled={sessionState.isCreating}
-          className={`text-white text-[18px] ctaBtn font-gotham font-medium italic transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${showFinalContent ? "opacity-100" : "opacity-0"
-            }`}
+          className={`text-white text-[18px] ctaBtn font-gotham font-medium italic transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+            showFinalContent ? "opacity-100" : "opacity-0"
+          }`}
           style={{
             visibility: showFinalContent ? "visible" : "hidden",
             background:

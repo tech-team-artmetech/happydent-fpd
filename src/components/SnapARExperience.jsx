@@ -7,8 +7,6 @@ const isTablet =
 const isSohamDevice =
   window.innerWidth >= 350 && window.innerWidth <= 414 && !isTablet;
 
-
-
 // Enhanced Canvas Management - NO CONTEXT ACCESS
 const enhanceCanvas = (canvas) => {
   if (!canvas) return;
@@ -109,8 +107,6 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
   const [isUploading, setIsUploading] = useState(false);
   const [showEndScreen, setShowEndScreen] = useState(false);
-
-
 
   // 🔴 RED DEMON DETECTION: Ultra-efficient pixel scanning
   const [redDemonDetection, setRedDemonDetection] = useState({
@@ -852,8 +848,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
       console.log("🔥 Step 3: Load both lenses...");
       const actualLensGroupId = "b2aafdd8-cb11-4817-9df9-835b36d9d5a7";
-      const lessLensId = "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d";
-      const moreLensId = "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+      const lessLensId = "a4c89dd6-7e7a-4ec2-8390-9df9545b5994";
+      const moreLensId = "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
       // Load both lenses
       const lessLens = await cache.cameraKit.lensRepository.loadLens(
@@ -1125,8 +1121,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       "less";
     const appliedLensId =
       appliedGroupSize === "less"
-        ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-        : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+        ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+        : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
     onComplete({
       ...userData,
@@ -1396,8 +1392,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
   //         "less";
   //       const appliedLensId =
   //         appliedGroupSize === "less"
-  //           ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-  //           : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+  //           ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+  //           : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
   //       setTimeout(() => {
   //         setIsUploading(false);
@@ -1426,8 +1422,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
   //         "less";
   //       const appliedLensId =
   //         appliedGroupSize === "less"
-  //           ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-  //           : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+  //           ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+  //           : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
   //       setTimeout(() => {
   //         setIsUploading(false);
@@ -1459,8 +1455,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
   //       "less";
   //     const appliedLensId =
   //       appliedGroupSize === "less"
-  //         ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-  //         : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+  //         ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+  //         : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
   //     setTimeout(() => {
   //       setIsUploading(false);
@@ -1481,7 +1477,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
   // Add these state variables to your component
   const [isCompositingImage, setIsCompositingImage] = useState(false);
-  const [compositeStatus, setCompositeStatus] = useState('');
+  const [compositeStatus, setCompositeStatus] = useState("");
   const [isRemovingBg, setIsRemovingBg] = useState(false);
 
   // Function to create polaroid composite
@@ -1602,14 +1598,17 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
   // Add this composite function before your captureAndUpload function
   // Add this composite function before your captureAndUpload function
   // Add this composite function before your captureAndUpload function
-  const createPolaroidComposite = async (backgroundRemovedBlob, polaroidFrameUrl) => {
+  const createPolaroidComposite = async (
+    backgroundRemovedBlob,
+    polaroidFrameUrl
+  ) => {
     return new Promise((resolve, reject) => {
       try {
         console.log("🖼️ Starting polaroid composite creation...");
 
         // Create canvas for compositing
-        const compositeCanvas = document.createElement('canvas');
-        const ctx = compositeCanvas.getContext('2d');
+        const compositeCanvas = document.createElement("canvas");
+        const ctx = compositeCanvas.getContext("2d");
 
         // Set canvas dimensions (adjust based on your polaroid frame size)
         const POLAROID_WIDTH = 400;
@@ -1620,18 +1619,18 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
         // Enable high quality rendering
         ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
+        ctx.imageSmoothingQuality = "high";
 
         let imagesLoaded = 0;
         const totalImages = 2;
 
         // Load background-removed image
         const bgRemovedImg = new Image();
-        bgRemovedImg.crossOrigin = 'anonymous';
+        bgRemovedImg.crossOrigin = "anonymous";
 
         // Load polaroid frame
         const polaroidFrame = new Image();
-        polaroidFrame.crossOrigin = 'anonymous';
+        polaroidFrame.crossOrigin = "anonymous";
 
         const checkComplete = () => {
           imagesLoaded++;
@@ -1667,37 +1666,58 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
                 drawY = photoAreaY;
               }
 
-              console.log("🖼️ Drawing background-removed image:", { drawX, drawY, drawWidth, drawHeight });
+              console.log("🖼️ Drawing background-removed image:", {
+                drawX,
+                drawY,
+                drawWidth,
+                drawHeight,
+              });
 
               // Draw the background-removed image (z-index 1)
               ctx.drawImage(bgRemovedImg, drawX, drawY, drawWidth, drawHeight);
 
               // Step 2: Draw the polaroid frame on top (z-index 0 - in front)
               console.log("🖼️ Drawing polaroid frame on top");
-              ctx.drawImage(polaroidFrame, 0, 0, POLAROID_WIDTH, POLAROID_HEIGHT);
+              ctx.drawImage(
+                polaroidFrame,
+                0,
+                0,
+                POLAROID_WIDTH,
+                POLAROID_HEIGHT
+              );
 
               // Convert to blob
-              compositeCanvas.toBlob((blob) => {
-                if (blob) {
-                  console.log("✅ Polaroid composite created successfully, size:", blob.size);
-                  resolve(blob);
-                } else {
-                  reject(new Error("Failed to create composite blob"));
-                }
-              }, 'image/png', 1.0);
-
+              compositeCanvas.toBlob(
+                (blob) => {
+                  if (blob) {
+                    console.log(
+                      "✅ Polaroid composite created successfully, size:",
+                      blob.size
+                    );
+                    resolve(blob);
+                  } else {
+                    reject(new Error("Failed to create composite blob"));
+                  }
+                },
+                "image/png",
+                1.0
+              );
             } catch (drawError) {
-              reject(new Error(`Failed to draw composite: ${drawError.message}`));
+              reject(
+                new Error(`Failed to draw composite: ${drawError.message}`)
+              );
             }
           }
         };
 
         // Handle image loading
         bgRemovedImg.onload = checkComplete;
-        bgRemovedImg.onerror = () => reject(new Error("Failed to load background-removed image"));
+        bgRemovedImg.onerror = () =>
+          reject(new Error("Failed to load background-removed image"));
 
         polaroidFrame.onload = checkComplete;
-        polaroidFrame.onerror = () => reject(new Error("Failed to load polaroid frame"));
+        polaroidFrame.onerror = () =>
+          reject(new Error("Failed to load polaroid frame"));
 
         // Start loading images
         // Convert blob to URL for background-removed image
@@ -1711,7 +1731,6 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
         setTimeout(() => {
           URL.revokeObjectURL(bgRemovedUrl);
         }, 10000);
-
       } catch (error) {
         reject(new Error(`Composite creation failed: ${error.message}`));
       }
@@ -1931,8 +1950,8 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
   //       const appliedGroupSize = userData?.groupSize || localStorage.getItem("selectedGroupSize") || "less";
   //       const appliedLensId = appliedGroupSize === "less"
-  //         ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-  //         : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+  //         ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+  //         : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
   //       setTimeout(() => {
   //         setIsUploading(false);
@@ -1986,7 +2005,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
     console.log("📸 🚀 PROCEED CLICKED - Getting background-removed PNG...");
     setIsUploading(true);
     setIsRemovingBg(true);
-    setCompositeStatus('Capturing screenshot...');
+    setCompositeStatus("Capturing screenshot...");
 
     // Update counter
     const currentCounter = localStorage.getItem("photoCounter") || "0";
@@ -2002,13 +2021,14 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
     } else if (window.snapARPreloadCache?.session?.output?.live) {
       canvas = window.snapARPreloadCache.session.output.live;
     } else {
-      canvas = document.getElementById("canvas") || document.querySelector("#canvas");
+      canvas =
+        document.getElementById("canvas") || document.querySelector("#canvas");
     }
 
     if (!canvas || !userData?.phone || isCapturing) {
       setIsUploading(false);
       setIsRemovingBg(false);
-      setCompositeStatus('');
+      setCompositeStatus("");
       return;
     }
 
@@ -2053,42 +2073,62 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
 
       tempCtx.drawImage(
         canvas,
-        captureArea.x, captureArea.y, captureArea.width, captureArea.height,
-        0, 0, enlargedWidth, enlargedHeight
+        captureArea.x,
+        captureArea.y,
+        captureArea.width,
+        captureArea.height,
+        0,
+        0,
+        enlargedWidth,
+        enlargedHeight
       );
 
       const croppedBlob = await new Promise((resolve, reject) => {
-        tempCanvas.toBlob((result) => {
-          if (result) resolve(result);
-          else reject(new Error("Failed to create cropped blob"));
-        }, "image/png", 1.0);
+        tempCanvas.toBlob(
+          (result) => {
+            if (result) resolve(result);
+            else reject(new Error("Failed to create cropped blob"));
+          },
+          "image/png",
+          1.0
+        );
       });
 
       console.log("✅ Cropped screenshot created");
 
       // Remove background
-      setCompositeStatus('Removing background...');
+      setCompositeStatus("Removing background...");
 
       let backgroundRemovedImageUrl = null;
       let backgroundRemoved = false;
 
       try {
         const bgRemovalFormData = new FormData();
-        bgRemovalFormData.append("image", croppedBlob, `${userData.phone}_screenshot.png`);
+        bgRemovalFormData.append(
+          "image",
+          croppedBlob,
+          `${userData.phone}_screenshot.png`
+        );
         bgRemovalFormData.append("phone", userData.phone);
         bgRemovalFormData.append("counter", newCounter);
 
-        const bgRemovalResponse = await fetch("https://artmetech.co.in/api/remove-bg", {
-          method: "POST",
-          body: bgRemovalFormData,
-        });
+        const bgRemovalResponse = await fetch(
+          "https://artmetech.co.in/api/remove-bg",
+          {
+            method: "POST",
+            body: bgRemovalFormData,
+          }
+        );
 
         if (bgRemovalResponse.ok) {
           const bgRemovalResult = await bgRemovalResponse.json();
           if (bgRemovalResult.success) {
             backgroundRemovedImageUrl = bgRemovalResult.data.imageUrl;
             backgroundRemoved = true;
-            console.log("✅ Background removal successful:", backgroundRemovedImageUrl);
+            console.log(
+              "✅ Background removal successful:",
+              backgroundRemovedImageUrl
+            );
           }
         }
       } catch (bgError) {
@@ -2096,11 +2136,15 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       }
 
       // Upload original screenshot as fallback
-      setCompositeStatus('Uploading images...');
+      setCompositeStatus("Uploading images...");
       setIsRemovingBg(false);
 
       const formData = new FormData();
-      formData.append("photo", croppedBlob, `${userData.phone}_screenshot_${newCounter}.png`);
+      formData.append(
+        "photo",
+        croppedBlob,
+        `${userData.phone}_screenshot_${newCounter}.png`
+      );
       formData.append("phone", userData.phone);
       formData.append("source", "snapchat_screenshot");
       formData.append("counter", newCounter);
@@ -2125,15 +2169,19 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
           localStorage.setItem("userPhotoBgRemoved", backgroundRemovedImageUrl);
         }
 
-        const appliedGroupSize = userData?.groupSize || localStorage.getItem("selectedGroupSize") || "less";
-        const appliedLensId = appliedGroupSize === "less"
-          ? "0e1363f7-bf5c-43ce-8527-ebf8fa31ef9d"
-          : "f60131ce-4f77-46b6-ac1a-3d5c839c4035";
+        const appliedGroupSize =
+          userData?.groupSize ||
+          localStorage.getItem("selectedGroupSize") ||
+          "less";
+        const appliedLensId =
+          appliedGroupSize === "less"
+            ? "a4c89dd6-7e7a-4ec2-8390-9df9545b5994"
+            : "32f1cc6e-cb6f-4f2f-be03-08f51b8feddf";
 
         setTimeout(() => {
           setIsUploading(false);
           setIsRemovingBg(false);
-          setCompositeStatus('');
+          setCompositeStatus("");
           setShowEndScreen(true);
 
           onComplete({
@@ -2152,7 +2200,6 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       } else {
         throw new Error("Upload failed");
       }
-
     } catch (error) {
       console.error("❌ Process failed:", error);
 
@@ -2163,7 +2210,7 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       setTimeout(() => {
         setIsUploading(false);
         setIsRemovingBg(false);
-        setCompositeStatus('');
+        setCompositeStatus("");
         setShowEndScreen(true);
 
         onComplete({
@@ -2177,10 +2224,6 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
       }, 1000);
     }
   };
-
-
-
-
 
   if (error) {
     return (
@@ -2290,21 +2333,16 @@ const SnapARExperience = ({ onComplete, userData, apiToken }) => {
             </div>
           )}
 
-
-
-
-          {
-            (autoCapturing || isUploading || isRemovingBg) && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-20">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-white mx-auto mb-4 drop-shadow-lg"></div>
-                  <div className="animate-pulse text-white text-xl font-bold drop-shadow-lg">
-                    {compositeStatus || "Processing your image..."}
-                  </div>
+          {(autoCapturing || isUploading || isRemovingBg) && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-20">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-white mx-auto mb-4 drop-shadow-lg"></div>
+                <div className="animate-pulse text-white text-xl font-bold drop-shadow-lg">
+                  {compositeStatus || "Processing your image..."}
                 </div>
               </div>
-            )
-          }
+            </div>
+          )}
         </div>
       </div>
     </ARErrorBoundary>
